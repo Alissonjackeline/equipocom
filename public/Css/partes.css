@@ -1,0 +1,304 @@
+body {
+    background-image: url("/img/fondosvg.svg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    /* Fija la imagen de fondo para que no se desplace con el contenido */
+    padding-bottom: 60px;
+}
+
+#custom-li-no-divider {
+    border: none;
+}
+
+#card {
+    background-color: #fff;
+    border: none;
+}
+
+#card1 {
+    border: none;
+}
+
+#card2 {
+    max-height: 370px;
+    overflow-y: auto;
+}
+
+#card3 {
+    max-height: 230px;
+    overflow-y: auto;
+}
+
+.timeline {
+    position: relative;
+}
+
+.timeline:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 1rem;
+    height: 100%;
+    border-right: 2px solid #dee2e6;
+}
+
+.timeline-block {
+    position: relative;
+}
+
+.timeline-block:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.timeline-block:first-child {
+    margin-top: 0;
+}
+
+.timeline-block:last-child {
+    margin-bottom: 0;
+}
+
+.timeline-step {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    left: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 30%;
+    background: #5197F7;
+    text-align: center;
+    transform: translateX(-50%);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.timeline-step svg,
+.timeline-step i {
+    line-height: 1.4;
+}
+
+.timeline-content {
+    position: relative;
+    margin-left: 45px;
+    padding-top: 0.35rem;
+    position: relative;
+    top: -6px;
+}
+
+.timeline-content:after {
+    display: table;
+    clear: both;
+}
+
+@media (min-width: 992px) {
+    .timeline:before {
+        left: 50%;
+        margin-left: -1px;
+    }
+
+    .timeline-step {
+        left: 50%;
+    }
+
+    .timeline-content {
+        width: 38%;
+    }
+
+    .timeline-block:nth-child(even) .timeline-content {
+        float: right;
+    }
+}
+
+.timeline-one-side:before {
+    left: 1rem;
+}
+
+.timeline-one-side .timeline-step {
+    left: 1rem;
+}
+
+.timeline-one-side .timeline-content {
+    width: auto;
+}
+
+@media (min-width: 992px) {
+    .timeline-one-side .timeline-content {
+        max-width: 30rem;
+    }
+}
+
+.timeline-one-side .timeline-block:nth-child(even) .timeline-content {
+    float: none;
+}
+
+.font-weight-bold {
+    font-weight: 600 !important;
+}
+
+.text-sm {
+    font-size: 0.875rem !important;
+}
+
+.text-sm {
+    line-height: 1.5;
+}
+
+.text-dark {
+    color: #344767 !important;
+}
+
+#derivados {
+    background-color: #fff;
+    border: none;
+}
+
+/* Define el estilo para la tarjeta personalizada cuando se pasa el cursor sobre ella */
+.custom-card:hover {
+    background-color: #5197F7;
+    /* Cambia el color de fondo al pasar el cursor */
+    color: #fff;
+    /* Cambia el color del texto a blanco al pasar el cursor */
+}
+
+#encabezado {
+    background-color: #5197F7;
+    color: white;
+}
+
+#tarjeta {
+    background-color: #5197F7 !important;
+}
+
+#avatarDropdown {
+    border: none;
+    background-color: #f8f9fa;
+}
+
+.custonfon {
+    font-family: "Averia Serif Libre", cursive;
+    font-family: "Cabin Condensed", sans-serif;
+    font-family: "Inter", sans-serif;
+    font-family: "Lato", sans-serif;
+    font-family: "Rubik", sans-serif;
+    font-size: 13px;
+}
+
+#color {
+    color: #5197F7;
+}
+
+/* Estilo para el sidebar */
+.sidebar {
+    height: 100%;
+    width: 80px;
+    position: fixed;
+    top: 0;
+    left: -100px;
+    background-color: #5197F7;
+    padding-top: 20px;
+    transition: 0.3s;
+}
+
+.p {
+    font-size: 12px;
+}
+
+/* Estilo para el contenido principal cuando el sidebar está abierto */
+.content {
+    margin-left: 0;
+    transition: 0.3s;
+}
+
+/* Ajuste del margen izquierdo del contenido principal cuando el sidebar está cerrado */
+.sidebar-closed .content-container {
+    margin-left: 100px;
+}
+
+.sidebar-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 65px;
+    height: 60px;
+    padding: 8px 4px;
+    text-align: center;
+}
+
+.sidebar-link i {
+    font-size: 30px !important;
+    margin-bottom: 4px;
+}
+
+.sidebar-text {
+    font-size: 11px !important;
+    margin: 0;
+    line-height: 1.2;
+    font-weight: 600;
+}
+
+/* Ajuste del margen izquierdo del contenido principal cuando el sidebar está abierto */
+.sidebar-open .content-container {
+    margin-left: 0;
+}
+
+/* Estilo para los botones en el sidebar */
+.sidebar ul li {
+    list-style: none;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* Estilo para el botón de alternar el sidebar */
+#sidebarCollapse {
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.custom-btn {
+    font-size: 18px;
+}
+
+/* Estilo para el sidebar en dispositivos desktop */
+@media (min-width: 768px) {
+    .sidebar {
+        left: 0;
+    }
+
+    .content-container {
+        margin-left: 80px;
+    }
+
+    .navbar {
+        margin-left: 80px;
+    }
+}
+
+/* Estilo para el sidebar en dispositivos móviles */
+@media (max-width: 767px) {
+    .sidebar {
+        left: -80px;
+    }
+
+    .content-container {
+        margin-left: 0;
+    }
+
+    .navbar {
+        margin-left: 0;
+    }
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 3;
+}

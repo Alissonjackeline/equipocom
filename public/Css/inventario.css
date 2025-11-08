@@ -1,0 +1,134 @@
+.btn-circle {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.btn-persona {
+    background-color: #146AF4;
+    color: white;
+    border: none;
+}
+
+.btn-persona:hover {
+    background-color: #0d52c4;
+    color: white;
+}
+
+.btn-persona:active {
+    background-color: #0a3d92;
+    transform: translateY(0);
+}
+
+.btn-persona:focus {
+    background-color: #146AF4;
+    color: white;
+}
+
+
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    background-color: #6191EF;
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    border: none;
+    padding: 1rem;
+}
+
+
+.table tbody tr:hover {
+    background-color: #f0f4ff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+
+.badge {
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    font-size: 0.85rem;
+}
+
+.btn-circle:hover {
+    transform: scale(1.1);
+    transition: all 0.3s ease;
+}
+
+.info-label {
+    font-size: 0.7rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-right: 5px;
+}
+
+.info-value {
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 0.85rem;
+}
+
+.info-asigtable {
+    font-weight: 500;
+    color: #0041AC;
+    font-size: 0.75rem;
+}
+
+.table tbody td {
+    vertical-align: middle;
+    padding: 0.5rem;
+    border-color: #e9ecef;
+}
+
+.mb-1 {
+    margin-bottom: 0.25rem !important;
+}
+
+.filter-section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+}
+
+.form-select,
+.form-control {
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.form-select:focus,
+.form-control:focus {
+    border-color: #6191EF;
+    box-shadow: 0 0 0 0.2rem rgba(97, 145, 239, 0.25);
+}
+
+.btn-custom:hover {
+    background-color: #4a7bd8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(97, 145, 239, 0.4);
+    color: white;
+}
+
+.action-btn {
+    margin: 0 2px;
+    transition: all 0.3s ease;
+}
+
+.bg-purple {
+    background-color: #8b5cf6;
+}
+
+.text-primary-custom {
+    color: #6191EF;
+}

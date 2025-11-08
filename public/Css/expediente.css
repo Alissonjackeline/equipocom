@@ -1,0 +1,82 @@
+#box-razon-social {
+    display: none;
+}
+
+.text-bg-pink {
+    background-color: #ff69b4;
+    /* Rosado */
+    color: #fff;
+}
+
+.text-bg-blue {
+    background-color: #007bff;
+    /* Azul */
+    color: #fff;
+}
+
+
+.drop-container {
+    background-color: #fff;
+    position: relative;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    margin-top: 2.1875rem;
+    border-radius: 10px;
+    border: 2px dashed rgb(171, 202, 255);
+    color: #444;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out, border 0.2s ease-in-out;
+}
+
+.btn-primary:focus,
+.btn-primary:active {
+    background-color: #5197F7 !important;
+    border-color: #5197F7 !important;
+    color: #ffffff;
+}
+
+.drop-container:hover {
+    background: #5197F7;
+    border-color: rgba(17, 17, 17, 0.616);
+}
+
+.drop-container:hover .drop-title {
+    color: #222;
+}
+
+.drop-title {
+    color: #444;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    transition: color 0.2s ease-in-out;
+}
+
+#file-input {
+    width: 350px;
+    max-width: 100%;
+    color: #444;
+    padding: 2px;
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid rgba(8, 8, 8, 0.288);
+}
+
+#file-input::file-selector-button {
+    margin-right: 20px;
+    border: none;
+    background: #5197F7;
+    padding: 10px 20px;
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+}
+
+#file-input::file-selector-button:hover {
+    background: #5197F7;
+}

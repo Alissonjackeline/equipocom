@@ -1,0 +1,155 @@
+body {
+    background-image: url("/img/fondosvg.svg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100vh;
+}
+
+.tipotext {
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+}
+
+#scaner {
+    background-color: #fff0;
+    border: none;
+}
+
+#color2 {
+    color: #5197F7;
+}
+
+#titulo {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+    #titulo {
+        font-size: 4rem;
+    }
+}
+
+@media (min-width: 1200px) {
+    #titulo {
+        font-size: 5rem;
+    }
+}
+
+input[type="text"] {
+    font-size: 1.5rem;
+    padding: 10px;
+    height: auto;
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    input[type="text"] {
+        font-size: 2rem;
+        height: 60px;
+    }
+}
+
+@media (min-width: 1200px) {
+    input[type="text"] {
+        font-size: 3rem;
+        height: 90px;
+    }
+}
+
+
+#logo {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+.font-weight-bold {
+    font-weight: 600 !important;
+}
+
+.text-sm {
+    font-size: 0.875rem !important;
+}
+
+.text-sm {
+    line-height: 1.5;
+}
+
+.text-dark {
+    color: #344767 !important;
+}
+
+#historial-container {
+    display: none;
+    max-height: 800px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background: #f9f9f9;
+}
+
+#titulo {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#derivados {
+    background-color: #fff;
+    border: none;
+}
+
+.custom-card:hover {
+    background-color: #5197F7;
+    color: #fff;
+}
+
+#encabezado {
+    background-color: #5197F7;
+    color: white;
+}
+
+#tarjeta {
+    background-color: #5197F7;
+}
+
+#avatarDropdown {
+    border: none;
+    background-color: #f8f9fa;
+}
+
+.custonfon {
+    font-family: "Averia Serif Libre", cursive;
+    font-family: "Cabin Condensed", sans-serif;
+    font-family: "Inter", sans-serif;
+    font-family: "Lato", sans-serif;
+    font-family: "Rubik", sans-serif;
+    font-size: 13px;
+}
+
+#color {
+    color: #5197F7;
+}
+
+
+.sidebar {
+    height: 100%;
+    width: 60px;
+    position: fixed;
+    top: 0;
+    left: -100px;
+    background-color: #5197F7;
+    padding-top: 20px;
+    transition: 0.3s;
+}
+
+.p {
+    font-size: 14px;
+}

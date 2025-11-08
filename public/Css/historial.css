@@ -1,0 +1,85 @@
+.info-item {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.info-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.5rem;
+}
+
+.info-label {
+    font-size: 0.65rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.info-span {
+    font-size: 0.75rem;
+    color: #0041AC;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.info-value {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-top: 0.25rem;
+}
+
+.fondocard {
+    background-color: #D3E2EE;
+
+}
+
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+
+.action-btn {
+    margin: 0 2px;
+    transition: all 0.3s ease;
+}
+
+.btn-circle {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.btn-persona {
+    background-color: #146af4;
+    color: white;
+    border: none;
+}
+
+.btn-persona:hover {
+    background-color: #0d52c4;
+    color: white;
+}
+
+.btn-persona:active {
+    background-color: #0a3d92;
+    transform: translateY(0);
+}
+
+.btn-persona:focus {
+    background-color: #146af4;
+    color: white;
+}

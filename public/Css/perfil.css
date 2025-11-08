@@ -1,0 +1,109 @@
+.card__img {
+    height: 192px;
+    width: 100%;
+    --s: 84px;
+    --c1: #f2f2f2;
+    --c2: #cdcbcc;
+    --c3: #999999;
+
+    --_g: 0 120deg, #0000 0;
+    background: conic-gradient(
+            from 0deg at calc(500% / 6) calc(100% / 3),
+            var(--c3) var(--_g)
+        ),
+        conic-gradient(
+            from -120deg at calc(100% / 6) calc(100% / 3),
+            var(--c2) var(--_g)
+        ),
+        conic-gradient(
+            from 120deg at calc(100% / 3) calc(500% / 6),
+            var(--c1) var(--_g)
+        ),
+        conic-gradient(
+            from 120deg at calc(200% / 3) calc(500% / 6),
+            var(--c1) var(--_g)
+        ),
+        conic-gradient(
+            from -180deg at calc(100% / 3) 50%,
+            var(--c2) 60deg,
+            var(--c1) var(--_g)
+        ),
+        conic-gradient(
+            from 60deg at calc(200% / 3) 50%,
+            var(--c1) 60deg,
+            var(--c3) var(--_g)
+        ),
+        conic-gradient(
+            from -60deg at 50% calc(100% / 3),
+            var(--c1) 120deg,
+            var(--c2) 0 240deg,
+            var(--c3) 0
+        );
+    background-size: calc(var(--s) * 1.732) var(--s);
+}
+
+.card__avatar {
+    position: absolute;
+    width: 114px;
+    height: 114px;
+    background: #211c6a;
+    color: white;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 60%; /* Coloca el avatar en el centro vertical */
+    left: 50%; /* Coloca el avatar en el centro horizontal */
+    transform: translate(
+        -50%,
+        -50%
+    ); /* Centra el avatar respecto al punto medio de la tarjeta */
+}
+
+.card__avatar svg {
+    width: 100px;
+    height: 100px;
+}
+
+.card__title {
+    margin-top: 60px;
+    font-weight: 500;
+    font-size: 18px;
+    color: var(--main-color);
+}
+
+.card__subtitle {
+    margin-top: 10px;
+    font-weight: 400;
+    font-size: 15px;
+    color: var(--submain-color);
+}
+
+.card__btn {
+    margin-top: 15px;
+    width: 76px;
+    height: 31px;
+    border: 2px solid var(--main-color);
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 11px;
+    color: var(--main-color);
+    background: var(--bg-color);
+    text-transform: uppercase;
+    transition: all 0.3s;
+}
+
+.card__btn-solid {
+    background: var(--main-color);
+    color: var(--bg-color);
+}
+
+.card__btn:hover {
+    background: var(--main-color);
+    color: var(--bg-color);
+}
+
+.card__btn-solid:hover {
+    background: var(--bg-color);
+    color: var(--main-color);
+}
