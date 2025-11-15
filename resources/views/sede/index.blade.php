@@ -21,19 +21,31 @@
                         <label class="form-label fw-semibold">
                             Nombre de sede:<span class="text-danger">*</span>
                         </label>
-                        <input type="text" name="Name" class="form-control" placeholder="Ingresar nombre" required>
+                        <input type="text" name="Name" class="form-control" placeholder="Ingresar nombre"
+                            value="{{ old('Name') }}" required>
+                        @error('Name')
+                            <small class="text-danger">{{ '*' . $message }}</small>
+                        @enderror
                     </div>
 
                     <div class="col-md-3">
                         <label class="form-label fw-semibold">
                             Dirección:<span class="text-danger">*</span>
                         </label>
-                        <input type="text" name="Address" class="form-control" placeholder="Ingresar dirección" required>
+                        <input type="text" name="Address" class="form-control" placeholder="Ingresar dirección"
+                            value="{{ old('Address') }}" required>
+                        @error('Address')
+                            <small class="text-danger">{{ '*' . $message }}</small>
+                        @enderror
                     </div>
 
                     <div class="col-md-3">
                         <label class="form-label fw-semibold">Teléfono:<span class="text-danger">*</span></label>
-                        <input type="text" name="Phone" class="form-control" placeholder="Ingresar teléfono">
+                        <input type="text" name="Phone" class="form-control" placeholder="Ingresar teléfono"
+                            value="{{ old('Phone') }}">
+                        @error('Phone')
+                            <small class="text-danger">{{ '*' . $message }}</small>
+                        @enderror
                     </div>
 
                     <input type="hidden" name="Entity_id" value="1">
@@ -104,19 +116,22 @@
                                 @method('PUT')
 
                                 <div class="col-md-12 pt-2">
-                                    <label class="form-label fw-semibold">Nombre de sede:<span class="text-danger">*</span></label>
+                                    <label class="form-label fw-semibold">Nombre de sede:<span
+                                            class="text-danger">*</span></label>
                                     <input type="text" name="Name" class="form-control" value="{{ $hq->Name }}"
                                         required>
                                 </div>
 
                                 <div class="col-md-12 pt-2">
-                                    <label class="form-label fw-semibold">Dirección:<span class="text-danger">*</span></label>
+                                    <label class="form-label fw-semibold">Dirección:<span
+                                            class="text-danger">*</span></label>
                                     <input type="text" name="Address" class="form-control" value="{{ $hq->Address }}"
                                         required>
                                 </div>
 
                                 <div class="col-md-12 pt-2">
-                                    <label class="form-label fw-semibold">Teléfono:<span class="text-danger">*</span></label>
+                                    <label class="form-label fw-semibold">Teléfono:<span
+                                            class="text-danger">*</span></label>
                                     <input type="text" name="Phone" class="form-control" value="{{ $hq->Phone }}">
                                 </div>
 

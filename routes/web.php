@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\AsignacionController;
+use App\Http\Controllers\EquipmentTypeController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\DevolucionController;
 use App\Http\Controllers\EntitiesController;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\RoleController;
-use App\Http\Controllers\TipoEquipoController;
+use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
 
 Route::get('/', [LoginController::class, 'index'])->name('login');
@@ -30,8 +31,8 @@ Route::resources([
     'sede' => HeadquartersController::class,
     'jefes' => JefesController::class,
     'user' => UserController::class,
-    'tipoequipo' => TipoEquipoController::class,
-    'proveedor' => ProveedorController::class,
+    'tipoequipo' => EquipmentTypeController::class,
+    'proveedor' => SupplierController::class,
     'entities' => EntitiesController::class,
     'rol' => RoleController::class,
 ]);

@@ -1,148 +1,184 @@
- @extends('template')
- @section('title', 'Proveedor')
+@extends('template')
+@section('title', 'Proveedor')
 
- @push('css')
-     <link href="{{ asset('Css/inventario.css') }}" rel="stylesheet" />
- @endpush
- @section('content')
-     <div class="container-fluid">
-         <div class="row pt-2">
-             <x-card-header title="PROVEDORES" icon="fa-solid fa-boxes-packing">
-                 <form action="" method="" class="row">
-                     <div class="col-md-2">
-                         <label for="company_name" class="form-label fw-semibold">
-                             Empresa:<span class="text-danger">*</span>
-                         </label>
-                         <input type="text" name="company_name" id="company_name" class="form-control"
-                             placeholder="Ingrese nombre empresa" required>
-                     </div>
+@push('css')
+    <link href="{{ asset('Css/inventario.css') }}" rel="stylesheet" />
+@endpush
 
-                     <div class="col-md-3">
-                         <label for="ruc" class="form-label fw-semibold">
-                             RUC:<span class="text-danger">*</span>
-                         </label>
-                         <input type="text" name="ruc" id="ruc" class="form-control" placeholder="Ingrese ruc"
-                             required>
-                     </div>
+@section('content')
+    @include('layouts.partials.alert')
 
-                     <div class="col-md-2">
-                         <label for="phone" class="form-label fw-semibold">
-                             Telefono:<span class="text-danger">*</span>
-                         </label>
-                         <input type="text" name="phone" id="phone" class="form-control"
-                             placeholder="Ingrese telefono" required>
-                     </div>
-                     <div class="col-md-2">
-                         <label for="location" class="form-label fw-semibold">
-                             Direccion:<span class="text-danger">*</span>
-                         </label>
-                         <input type="text" name="location" id="location" class="form-control"
-                             placeholder="Ingrese direccion" required>
-                     </div>
+    <div class="container-fluid">
+        <div class="row pt-2">
+            <x-card-header title="PROVEEDORES" icon="fa-solid fa-boxes-packing">
+                <form action="{{ route('proveedor.store') }}" method="POST" class="row">
+                    @csrf
+                    
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">
+                            Empresa:<span class="text-danger">*</span>
+                        </label>
+                        <input type="text" name="Company_name" class="form-control" 
+                               placeholder="Ingrese nombre empresa" value="{{ old('Company_name') }}" required>
+                        @error('Company_name')
+                            <small class="text-danger">{{ '*' . $message }}</small>
+                        @enderror
+                    </div>
 
-                     <div class="col-md-2 d-flex align-items-end">
-                         <button class="btn btn-primary" type="submit">
-                             <i class="fa-solid fa-floppy-disk"></i>&nbsp;Guardar
-                         </button>
-                     </div>
-                 </form>
-             </x-card-header>
-         </div>
-         <div class="row pt-3">
-             <div class="col-lg-12">
-                 <x-data-table :columns="[
-                     ['label' => 'NOMBRE DE EMPRESA'],
-                     ['label' => 'RUC'],
-                     ['label' => 'TELEFONO', 'class' => 'text-center'],
-                     ['label' => 'DIRECCION', 'class' => 'text-center'],
-                     ['label' => 'ESTADO', 'class' => 'text-center'],
-                     ['label' => 'ACCIONES', 'class' => 'text-center'],
-                 ]" table-id="example">
-                     <tr>
-                         <td class="text-center">
-                             <div class="info-label">NOMBRE DE LA EMPRESA</div>
-                         </td>
-                         <td class="text-center">
-                             <div class="info-label">20876497234</div>
-                         </td>
-                         <td class="text-center">
-                             <div class="info-label">9999999</div>
-                         </td>
-                         <td class="text-center">
-                             <div class="info-label">DIRECCION DE EMPRESA</div>
-                         </td>
-                         <td class="custonfon text-center">
-                             <span class="badge text-bg-success">Activo</span>
-                             <span class="badge text-bg-danger">Inactivo</span>
-                         </td>
-                         <td class="text-center">
-                             <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditar"
-                                 title="Editar">
-                                 <i class="fa-solid fa-pen-to-square"></i>
-                             </button>
-                             <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                 data-bs-target="#modal-desactivar" title="Desactivar">
-                                 <i class="fa-solid fa-circle-xmark"></i>
-                             </button>
-                             <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
-                                 data-bs-target="#modal-activar" title="Activar">
-                                 <i class="fa-solid fa-circle-check"></i>
-                             </button>
-                         </td>
-                     </tr>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">
+                            RUC:<span class="text-danger">*</span>
+                        </label>
+                        <input type="text" name="Ruc" class="form-control" placeholder="Ingrese ruc" 
+                               value="{{ old('Ruc') }}" required maxlength="11">
+                        @error('Ruc')
+                            <small class="text-danger">{{ '*' . $message }}</small>
+                        @enderror
+                    </div>
 
-                 </x-data-table>
-                 <!-- Modal para desactivar -->
-                 <x-modal-status id="modal-desactivar" message="¿Seguro que quieres desactivar el proveedor?" action="#"
-                     confirmText="Desactivar" confirmClass="btn-danger" />
+                    <div class="col-md-2">
+                        <label class="form-label fw-semibold">
+                            Teléfono:
+                        </label>
+                        <input type="text" name="Phone" class="form-control" placeholder="Ingrese teléfono" 
+                               value="{{ old('Phone') }}">
+                        @error('Phone')
+                            <small class="text-danger">{{ '*' . $message }}</small>
+                        @enderror
+                    </div>
 
-                 <!-- Modal para activar -->
-                 <x-modal-status id="modal-activar" message="¿Seguro que quieres activar el proveedor?" action="#"
-                     confirmText="Activar" confirmClass="btn-success" />
-                 <x-modal-base id="modalEditar" title="Editar Proveedor">
-                     <form action="" method="">
-                         <div class="col-md-12 pt-2">
-                             <label for="company_name" class="form-label fw-semibold">
-                                 Empresa:<span class="text-danger">*</span>
-                             </label>
-                             <input type="text" name="company_name" id="company_name" class="form-control"
-                                 placeholder="Ingrese nombre empresa" required>
-                         </div>
+                    <div class="col-md-2">
+                        <label class="form-label fw-semibold">
+                            Dirección:<span class="text-danger">*</span>
+                        </label>
+                        <input type="text" name="Address" class="form-control" placeholder="Ingrese dirección" 
+                               value="{{ old('Address') }}" required>
+                        @error('Address')
+                            <small class="text-danger">{{ '*' . $message }}</small>
+                        @enderror
+                    </div>
 
-                         <div class="col-md-12 pt-2">
-                             <label for="ruc" class="form-label fw-semibold">
-                                 RUC:<span class="text-danger">*</span>
-                             </label>
-                             <input type="text" name="ruc" id="ruc" class="form-control"
-                                 placeholder="Ingrese ruc" required>
-                         </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa-solid fa-floppy-disk"></i>&nbsp;Guardar
+                        </button>
+                    </div>
+                </form>
+            </x-card-header>
+        </div>
 
-                         <div class="col-md-12 pt-2">
-                             <label for="phone" class="form-label fw-semibold">
-                                 Telefono:<span class="text-danger">*</span>
-                             </label>
-                             <input type="text" name="phone" id="phone" class="form-control"
-                                 placeholder="Ingrese telefono" required>
-                         </div>
-                         <div class="col-md-12 pt-2">
-                             <label for="location" class="form-label fw-semibold">
-                                 Direccion:<span class="text-danger">*</span>
-                             </label>
-                             <input type="text" name="location" id="location" class="form-control"
-                                 placeholder="Ingrese direccion" required>
-                         </div>
+        <div class="row pt-3">
+            <div class="col-lg-12">
+                <x-data-table :columns="[
+                    ['label' => 'NOMBRE DE EMPRESA'],
+                    ['label' => 'RUC'],
+                    ['label' => 'TELÉFONO', 'class' => 'text-center'],
+                    ['label' => 'DIRECCIÓN'],
+                    ['label' => 'ESTADO', 'class' => 'text-center'],
+                    ['label' => 'ACCIONES', 'class' => 'text-center'],
+                ]"  table-id="example">
 
-                     </form>
-                 </x-modal-base>
+                    @foreach ($suppliers as $supplier)
+                        <tr>
+                            <td>
+                                <div class="info-label">{{ $supplier->Company_name }}</div>
+                            </td>
+                            <td>
+                                <div class="info-label">{{ $supplier->Ruc }}</div>
+                            </td>
+                            <td class="text-center">
+                                <div class="info-label">{{ $supplier->Phone ?? 'N/A' }}</div>
+                            </td>
+                            <td>
+                                <div class="info-label">{{ $supplier->Address }}</div>
+                            </td>
+                            <td class="text-center">
+                                @if ($supplier->Status == 1)
+                                    <span class="badge text-bg-success">Activo</span>
+                                @else
+                                    <span class="badge text-bg-danger">Inactivo</span>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" 
+                                    data-bs-target="#modalEditar{{ $supplier->idSupplier }}" title="Editar">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button class="btn {{ $supplier->Status == 1 ? 'btn-danger' : 'btn-success' }} btn-sm" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#modalEstado{{ $supplier->idSupplier }}"
+                                    title="{{ $supplier->Status == 1 ? 'Desactivar' : 'Activar' }}">
+                                    <i class="fa-solid {{ $supplier->Status == 1 ? 'fa-circle-xmark' : 'fa-circle-check' }}"></i>
+                                </button>
+                            </td>
+                        </tr>
 
+                        <!-- Modal para cambiar estado -->
+                        <x-modal-status 
+                            id="modalEstado{{ $supplier->idSupplier }}"
+                            message="¿Seguro que deseas {{ $supplier->Status == 1 ? 'desactivar' : 'activar' }} al proveedor '{{ $supplier->Company_name }}'?"
+                            action="{{ route('proveedor.destroy', $supplier->idSupplier) }}"
+                            confirmText="{{ $supplier->Status == 1 ? 'Desactivar' : 'Activar' }}"
+                            confirmClass="{{ $supplier->Status == 1 ? 'btn-danger' : 'btn-success' }}" />
 
-             </div>
-         </div>
-     </div>
-     </div>
+                        <!-- Modal para editar -->
+                        <x-modal-base id="modalEditar{{ $supplier->idSupplier }}" title="Editar Proveedor" size="modal-sm">
+                            <form action="{{ route('proveedor.update', $supplier->idSupplier) }}" method="POST" class="row">
+                                @csrf
+                                @method('PUT')
+                                
+                                <div class="col-md-12 pt-2">
+                                    <label class="form-label fw-semibold">
+                                        Empresa:<span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" name="Company_name" class="form-control" 
+                                           value="{{ old('Company_name', $supplier->Company_name) }}" required>
+                                    @error('Company_name')
+                                        <small class="text-danger">{{ '*' . $message }}</small>
+                                    @enderror
+                                </div>
 
+                                <div class="col-md-12 pt-2">
+                                    <label class="form-label fw-semibold">
+                                        RUC:<span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" name="Ruc" class="form-control" 
+                                           value="{{ old('Ruc', $supplier->Ruc) }}" required maxlength="11">
+                                    @error('Ruc')
+                                        <small class="text-danger">{{ '*' . $message }}</small>
+                                    @enderror
+                                </div>
 
- @endsection
+                                <div class="col-md-12 pt-2">
+                                    <label class="form-label fw-semibold">
+                                        Teléfono:
+                                    </label>
+                                    <input type="text" name="Phone" class="form-control" 
+                                           value="{{ old('Phone', $supplier->Phone) }}" required>
+                                    @error('Phone')
+                                        <small class="text-danger">{{ '*' . $message }}</small>
+                                    @enderror
+                                </div>
 
- @push('js')
- @endpush
+                                <div class="col-md-12 pt-2">
+                                    <label class="form-label fw-semibold">
+                                        Dirección:<span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" name="Address" class="form-control" 
+                                           value="{{ old('Address', $supplier->Address) }}" required>
+                                    @error('Address')
+                                        <small class="text-danger">{{ '*' . $message }}</small>
+                                    @enderror
+                                </div>
+                        </x-modal-base>
+                        </form>
+                    @endforeach
+
+                </x-data-table>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@push('js')
+@endpush

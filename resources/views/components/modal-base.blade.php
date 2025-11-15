@@ -1,7 +1,7 @@
 @props([
     'id',
     'title',
-    'size' => 'modal-sm', // Valor por defecto si no se especifica
+    'size' => 'modal-sm',
     'headerClass' => '',
     'footer' => null
 ])

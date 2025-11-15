@@ -24,10 +24,16 @@ class HeadquartersController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'Name'      => 'required|string|max:70',
+            'Name'      => 'required|string|max:70|unique:headquarters,Name',
             'Address'   => 'required|string|max:70',
             'Phone'     => 'nullable|string|max:20',
             'Entity_id' => 'required|integer'
+        ], [
+            'Name.required' => 'El nombre de la sede es obligatorio',
+            'Name.unique' => 'Esta sede ya está registrada',
+            'Name.max' => 'El nombre no debe exceder los 70 caracteres',
+            'Address.required' => 'La dirección es obligatoria',
+            'Entity_id.required' => 'La entidad es obligatoria'
         ]);
 
         Headquarters::create($request->all());
@@ -72,7 +78,6 @@ class HeadquartersController extends Controller
                 : 'Sede desactivada correctamente.';
 
             return redirect()->route('sede.index')->with('success', $message);
-
         } catch (QueryException $e) {
             return redirect()->route('sede.index')->with('error', 'Error en base de datos al cambiar el estado.');
         } catch (\Exception $e) {
