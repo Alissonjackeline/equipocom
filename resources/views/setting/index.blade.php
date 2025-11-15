@@ -36,7 +36,7 @@
 
          <div class="col-6 col-md-3 pt-3">
              <div class="card text-center d-flex align-items-center pt-3 custom-card" style="border-radius: 30px">
-                 <a href="{{ route('empresa.index')}}" class="card-link">
+                 <a href="{{ route('entities.index')}}" class="card-link">
                      <img src="{{ asset('img/empresa.png') }}" class="mx-auto" alt="sedes" width="90px">
                  </a>
                  <div class="card-body">
