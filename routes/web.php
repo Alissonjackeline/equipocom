@@ -2,17 +2,16 @@
 
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\AsignacionController;
+use App\Http\Controllers\BossController;
 use App\Http\Controllers\EquipmentTypeController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\DevolucionController;
 use App\Http\Controllers\EntitiesController;
 use App\Http\Controllers\HeadquartersController;
 use App\Http\Controllers\homeController;
-use App\Http\Controllers\InventarioController;
-use App\Http\Controllers\JefesController;
+use App\Http\Controllers\EquipmentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
@@ -21,15 +20,15 @@ Route::get('/', [LoginController::class, 'index'])->name('login');
 Route::get('/panel', [homeController::class, 'index'])->name('panel');
 Route::post('/', [loginController::class, 'login'])->name('login.submit');
 
-Route::get('/inventario/historial', [InventarioController::class, 'historialinventario'])->name('inventario.historial');
+Route::get('/inventario/historial', [EquipmentController::class, 'historialinventario'])->name('inventario.historial');
 Route::resources([
-    'inventario' => InventarioController::class,
+    'inventario' => EquipmentController::class,
     'asignacion' => AsignacionController::class,
     'devolucion' => DevolucionController::class,
     'setting' => SettingController::class,
     'area' => AreaController::class,
     'sede' => HeadquartersController::class,
-    'jefes' => JefesController::class,
+    'jefes' => BossController::class,
     'user' => UserController::class,
     'tipoequipo' => EquipmentTypeController::class,
     'proveedor' => SupplierController::class,

@@ -29,7 +29,7 @@
                         <label class="form-label fw-semibold">
                             Sede:<span class="text-danger">*</span>
                         </label>
-                        <select name="Headquarters_id" class="form-select" required>
+                        <select name="Headquarters_id" class="form-control selectpicker show-tick" data-size="5" data-live-search="true" required>
                             <option value="" disabled {{ old('Headquarters_id') ? '' : 'selected' }}>Seleccionar Sede
                             </option>
                             @foreach ($headquarters as $hq)
@@ -113,7 +113,7 @@
                                     <label class="form-label fw-semibold">
                                         Sede:<span class="text-danger">*</span>
                                     </label>
-                                    <select name="Headquarters_id" class="form-select" required>
+                                    <select name="Headquarters_id" class="form-control selectpicker show-tick" data-size="5" data-live-search="true"  required>
                                         @foreach ($headquarters as $hq)
                                             <option value="{{ $hq->idHeadquarters }}"
                                                 {{ $area->Headquarters_id == $hq->idHeadquarters ? 'selected' : '' }}>

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Entities;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class EntitiesController extends Controller
 {
@@ -24,18 +26,27 @@ class EntitiesController extends Controller
             'Address' => 'required|string|max:70',
             'Phone' => 'nullable|string|max:20',
             'Correo' => 'required|email|max:50',
-            'Image' => 'nullable|image|max:2048'
+            'Image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
         $data = $request->all();
 
         // Si sube imagen
         if ($request->hasFile('Image')) {
-            $file = $request->file('Image');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('images/entities'), $filename);
+            $image = $request->file('Image');
+            $currentDateTime = Carbon::now()->format('Ymd_His');
+            $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+            $extension = $image->getClientOriginalExtension();
+            
+            $imageName = 'entity_' . $currentDateTime . '.' . $extension;
+            
+            // Guardar en storage
+            $imagePath = $image->storeAs('entities', $imageName, 'public');
+            $data['Image'] = $imagePath;
 
-            $data['Image'] = $filename;
+            if ($entities->Image && Storage::disk('public')->exists($entities->Image)) {
+                Storage::disk('public')->delete($entities->Image);
+            }
         }
 
         $entities->update($data);

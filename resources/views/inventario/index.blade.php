@@ -6,228 +6,243 @@
 @endpush
 
 @section('content')
+    @include('layouts.partials.alert')
+
     <div class="container-fluid">
         <div class="row pt-3">
-            <x-card-header title="INVENTARIO DE EQUIPOS" icon="fa-solid fa-computer" :buttons="[
-                [
-                    'text' => 'Agregar',
-                    'icon' => 'fa-solid fa-circle-plus me-1',
-                    'route' => route('inventario.create'),
-                    'variant' => 'persona',
-                ],
-                [
-                    'text' => 'Historial',
-                    'icon' => 'fa-solid fa-magnifying-glass me-1',
-                    'route' => route('inventario.historial'),
-                    'variant' => 'secondary',
-                ],
-            ]">
+            <div class="col-lg-8">
 
-                <form action="" method="POST">
-                    <div class="row g-3">
-                        <div class="col-md-3">
-                            <label class="form-label fw-semibold" for="tipo_id">
-                                Tipo de equipo:
-                                <span class="text-danger">*</span>
-                            </label>
-                            <select class="form-select" id="tipo_id" name="tipo_id" required>
-                                <option value="" selected disabled>Seleccionar tipo de equipo</option>
-                                <option value="1">Computadora</option>
-                                <option value="2">Laptop</option>
-                                <option value="3">Monitor</option>
+                <!-- CARD PRINCIPAL -->
+                <x-card-header title="INVENTARIO DE EQUIPOS" icon="fa-solid fa-computer" :buttons="[
+                    [
+                        'text' => 'Agregar',
+                        'icon' => 'fa-solid fa-circle-plus me-1',
+                        'route' => route('inventario.create'),
+                        'variant' => 'persona',
+                    ],
+                    [
+                        'text' => 'Historial',
+                        'icon' => 'fa-solid fa-magnifying-glass me-1',
+                        'route' => route('inventario.historial'),
+                        'variant' => 'secondary',
+                    ],
+                ]">
+
+                    <!-- FILTROS -->
+                    <form action="{{ route('inventario.index') }}" method="GET" class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold" for="tipo_id">Tipo de equipo:</label>
+                            <select class="form-control selectpicker show-tick" data-size="5" data-live-search="true"
+                                id="tipo_id" name="tipo_id">
+                                <option value="">Todos los tipos</option>
+                                @foreach ($equipmentTypes as $type)
+                                    <option value="{{ $type->idEquipmentType }}"
+                                        {{ request('tipo_id') == $type->idEquipmentType ? 'selected' : '' }}>
+                                        {{ $type->Name }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label fw-semibold" for="estado_id">
-                                Estado:
-                                <span class="text-danger">*</span>
-                            </label>
-                            <select class="form-select" id="estado_id" name="estado_id" required>
-                                <option value="" selected disabled>Seleccionar estado</option>
-                                <option value="1">Disponible</option>
-                                <option value="2">En uso</option>
-                                <option value="3">Mantenimiento</option>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold" for="estado_id">Estado:</label>
+                            <select class="form-control selectpicker show-tick" data-size="5" data-live-search="true"
+                                id="estado_id" name="estado_id">
+                                <option value="">Todos los estados</option>
+                                <option value="1" {{ request('estado_id') == '1' ? 'selected' : '' }}>Disponible
+                                </option>
+                                <option value="2" {{ request('estado_id') == '2' ? 'selected' : '' }}>Por preparar
+                                </option>
+                                <option value="3" {{ request('estado_id') == '3' ? 'selected' : '' }}>En uso</option>
+                                <option value="4" {{ request('estado_id') == '4' ? 'selected' : '' }}>Observación
+                                </option>
+                                <option value="5" {{ request('estado_id') == '5' ? 'selected' : '' }}>Reparación
+                                    Pendiente</option>
+                                <option value="6" {{ request('estado_id') == '6' ? 'selected' : '' }}>No devuelto
+                                </option>
+                                <option value="7" {{ request('estado_id') == '7' ? 'selected' : '' }}>Pérdida-Robo
+                                </option>
+                                <option value="8" {{ request('estado_id') == '8' ? 'selected' : '' }}>De baja</option>
                             </select>
                         </div>
-                        <div class="col-md-2 d-flex align-items-end">
-                            <button class="btn btn-primary">
-                                <i class="fa-solid fa-filter"></i>Filtrar
-                            </button>
+
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button class="btn btn-primary"><i class="fa-solid fa-filter"></i> Filtrar</button>
                         </div>
+                    </form>
+
+                    <div class="row pt-3">
+                        <div class="col-lg-12">
+
+                            <x-data-table :columns="[
+                                ['label' => 'TIPO'],
+                                ['label' => 'INFORMACIÓN DEL EQUIPO'],
+                                ['label' => 'DESCRIPCIÓN/IMAGEN', 'class' => 'text-center'],
+                                ['label' => 'ESTADO', 'class' => 'text-center'],
+                                ['label' => 'PROVEEDOR', 'class' => 'text-center'],
+                                ['label' => 'PRECIO', 'class' => 'text-center'],
+                                ['label' => 'ACCIONES', 'class' => 'text-center'],
+                            ]" table-id="example">
+
+                                @foreach ($equipments as $equipment)
+                                    <tr>
+                                        <td>
+                                            <span class="badge bg-info text-white">
+                                                {{ $equipment->equipmentType->Name }}
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <div class="mb-1"><span class="info-label">Código Patrimonial</span>
+                                                <span class="info-value">{{ $equipment->CodigoPatri }}</span>
+                                            </div>
+                                            <div class="mb-1"><span class="info-label">Serie</span>
+                                                <span class="info-value">{{ $equipment->Series }}</span>
+                                            </div>
+                                            <div class="mb-1"><span class="info-label">Modelo</span>
+                                                <span class="info-value">{{ $equipment->Model }}</span>
+                                            </div>
+                                            <div><span class="info-label">Marca</span>
+                                                <span class="info-value">{{ $equipment->Brand }}</span>
+                                            </div>
+                                        </td>
+
+                                        <td class="text-center">
+                                            <button class="btn btn-danger btn-circle action-btn" data-bs-toggle="modal"
+                                                data-bs-target="#modaldes{{ $equipment->idEquipment }}">
+                                                <i class="fa-solid fa-message"></i>
+                                            </button>
+
+                                            @if ($equipment->Imagen)
+                                                <button class="btn btn-dark btn-circle action-btn" data-bs-toggle="modal"
+                                                    data-bs-target="#modalimg{{ $equipment->idEquipment }}">
+                                                    <i class="fa-solid fa-images"></i>
+                                                </button>
+                                            @endif
+                                        </td>
+                                        <x-btn-descripcion id="modaldes{{ $equipment->idEquipment }}" title="DESCRIPCIÓN"
+                                            size="modal-sm">
+                                            <p>{{ $equipment->Description }}</p>
+                                        </x-btn-descripcion>
+
+                                        <x-btn-imagen id="modalimg{{ $equipment->idEquipment }}" title="IMAGEN"
+                                            size="modal-sm">
+                                            <img src="{{ $equipment->image_url }}" class="img-fluid"
+                                                alt="Imagen del equipo">
+                                        </x-btn-imagen>
+
+                                        <td class="text-center">
+                                            <span class="badge bg-{{ $equipment->status_class }}">
+                                                <i class="fa-solid fa-circle me-1"></i>{{ $equipment->status_text }}
+                                            </span>
+                                        </td>
+
+                                        <td class="text-center">
+                                            <span class="badge bg-purple text-white">
+                                                <i class="fa-solid fa-user me-1"></i>
+                                                {{ $equipment->supplier->Company_name }}
+                                            </span>
+                                        </td>
+
+                                        <td class="text-center">
+                                            S/ {{ number_format($equipment->Price, 2) }}
+                                        </td>
+
+                                        <td class="text-center">
+                                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                                data-bs-target="#modalEditar{{ $equipment->idEquipment }}">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </button>
+
+                                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                                data-bs-target="#modalEliminar{{ $equipment->idEquipment }}">
+                                                <i class="fa-solid fa-trash-can"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- EDITAR -->
+                                    <x-modal-editar-equipo id="modalEditar{{ $equipment->idEquipment }}" :equipment="$equipment"
+                                        :equipmentTypes="$equipmentTypes" :suppliers="$suppliers" />
+
+                                    <!-- ELIMINAR -->
+                                    <x-modal-eliminar-equipo id="modalEliminar{{ $equipment->idEquipment }}"
+                                        :equipment="$equipment" />
+                                @endforeach
+                            </x-data-table>
+                        </div>
+
                     </div>
-                </form>
 
+                </x-card-header>
+            </div>
+            <div class="col-lg-4">
+    <x-card-header title="ESTADÍSTICAS POR ESTADO" icon="fa-solid fa-chart-pie">
+        <div class="row g-2">
+            @php
+                $estados = [
+                    1 => ['nombre' => 'Disponible', 'icono' => 'fa-circle-check', 'color' => 'success'],
+                    2 => ['nombre' => 'Por preparar', 'icono' => 'fa-hourglass-half', 'color' => 'info'],
+                    3 => ['nombre' => 'En uso', 'icono' => 'fa-laptop', 'color' => 'primary'],
+                    4 => ['nombre' => 'Observación', 'icono' => 'fa-eye', 'color' => 'warning'],
+                    5 => ['nombre' => 'R Pendiente', 'icono' => 'fa-tools', 'color' => 'secondary'],
+                    6 => ['nombre' => 'No devuelto', 'icono' => 'fa-exclamation-triangle', 'color' => 'danger'],
+                    7 => ['nombre' => 'Perdida-Robo', 'icono' => 'fa-shield-alt', 'color' => 'dark'],
+                    8 => ['nombre' => 'De baja', 'icono' => 'fa-ban', 'color' => 'secondary'],
+                ];
+                $conteoEstados = [];
+                foreach ($estados as $key => $estado) {
+                    $conteoEstados[$key] = $equipmentsAll->where('status', $key)->count();
+                }
+            @endphp
 
-
-                <div class="row pt-3">
-                    <div class="col-lg-12">
-                        <x-data-table :columns="[
-                            ['label' => 'TIPO'],
-                            ['label' => 'INFORMACIÓN DEL EQUIPO'],
-                            ['label' => 'DESCRIPCION/IMAGEN', 'class' => 'text-center'],
-                            ['label' => 'ESTADO', 'class' => 'text-center'],
-                            ['label' => 'PROVEEDOR', 'class' => 'text-center'],
-                            ['label' => 'PRECIO', 'class' => 'text-center'],
-                            ['label' => 'ACCIONES', 'class' => 'text-center'],
-                        ]" table-id="example">
-
-                            <tr>
-                                <td>
-                                    <span class="badge bg-info text-white">PC</span>
-                                </td>
-                                <td>
-                                    <div class="mb-1">
-                                        <span class="info-label">Código Patrimonial</span>
-                                        <span class="info-value">CP-2024-001</span>
-                                    </div>
-                                    <div class="mb-1">
-                                        <span class="info-label">Serie</span>
-                                        <span class="info-value">SN123456789</span>
-                                    </div>
-                                    <div class="mb-1">
-                                        <span class="info-label">Modelo</span>
-                                        <span class="info-value">HP EliteDesk 800 G5</span>
-                                    </div>
-                                    <div>
-                                        <span class="info-label">Marca</span>
-                                        <span class="info-value">HP</span>
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <button class="btn btn-danger btn-circle action-btn" title="Ver descripción"
-                                        data-bs-toggle="modal" data-bs-target="#modaldes">
-                                        <i class="fa-solid fa-message"></i>
-                                    </button>
-                                    <button class="btn btn-dark btn-circle action-btn" title="Ver imágenes"
-                                        data-bs-toggle="modal" data-bs-target="#modalimg">
-                                        <i class="fa-solid fa-images"></i>
-                                    </button>
-                                </td>
-                                <td class="text-center">
-                                    <span class="badge bg-success">
-                                        <i class="fa-solid fa-circle-check me-1"></i>Disponible
+            @foreach ($estados as $key => $estado)
+                <div class="col-6">
+                    <div class="card border-0 shadow-sm mb-2">
+                        <div class="card-body p-3">
+                            <div class="d-flex align-items-center">
+                                <div class="shrink-0">
+                                    <span class="badge bg-{{ $estado['color'] }} p-2">
+                                        <i class="fa-solid {{ $estado['icono'] }} fa-lg"></i>
                                     </span>
-                                </td>
-                                <td class="text-center">
-                                    <span class="badge bg-purple text-white">
-                                        <i class="fa-solid fa-user me-1"></i>Pedro Timana
-                                    </span>
-                                </td>
-                                <td class="text-center">
-                                    <div class="info-value">S/ 2,500.00</div>
-                                </td>
-                                <td class="text-center">
-                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#modalEditar" title="Editar">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </button>
-                                    <button class="btn btn-danger btn-sm action-btn" title="Eliminar">
-                                        <i class="fa-solid fa-trash-can"></i>
-                                    </button>
-                                </td>
-                            </tr>
-
-                        </x-data-table>
-                        <x-modal-base id="modalEditar" title="Editar Inventario" size="modal-md">
-                            <form action="" method="POST">
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold" for="tipo_id">
-                                            Tipo de equipo:
-                                            <span class="text-danger">*</span>
-                                        </label>
-                                        <select class="form-select" id="tipo_id" name="tipo_id" required>
-                                            <option value="" selected disabled>Seleccionar tipo de equipo</option>
-                                            <option value="1">Computadora</option>
-                                            <option value="2">Laptop</option>
-                                            <option value="3">Monitor</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold" for="codigo">
-                                            Codigo patrimonial:
-                                            <span class="text-danger">*</span>
-                                        </label>
-                                        <input type="text" class="form-control" id="codigo" name="codigo"
-                                            placeholder="7278992025" required>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold" for="serie">
-                                            Serie:
-                                            <span class="text-danger">*</span>
-                                        </label>
-                                        <input type="text" class="form-control" id="serie" name="serie"
-                                            placeholder="SNFH57392K" required>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold" for="modelo">
-                                            Modelo:
-                                            <span class="text-danger">*</span>
-                                        </label>
-                                        <input type="text" class="form-control" id="modelo" name="modelo"
-                                            placeholder="SNF-555" required>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold" for="marca">
-                                            Marca:
-                                            <span class="text-danger">*</span>
-                                        </label>
-                                        <input type="text" class="form-control" id="marca" name="marca"
-                                            placeholder="SNF-555" required>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold" for="proveedor_id">
-                                            Proveedor:
-                                            <span class="text-danger">*</span>
-                                        </label>
-                                        <select class="form-select" id="proveedor_id" name="proveedor_id" required>
-                                            <option value="" selected disabled>Seleccionar proveedor</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold" for="precio">
-                                            Precio:
-                                            <span class="text-danger">*</span>
-                                        </label>
-                                        <input type="text" class="form-control" id="precio" name="precio"
-                                            placeholder="S/" required>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold" for="estado">
-                                            Estado:
-                                            <span class="text-danger">*</span>
-                                        </label>
-                                        <select class="form-select" id="estado" name="estado" required>
-                                            <option value="" selected disabled>Seleccionar proveedor</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <label class="form-label fw-semibold" for="descripcion">
-                                            Descripcion:
-                                            <span class="text-danger">*</span>
-                                        </label>
-                                        <textarea type="text" class="form-control" id="descripcion" name="descripcion" required></textarea>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <label class="form-label fw-semibold" for="imagen">
-                                            Imagen:
-                                        </label>
-                                        <input class="form-control" type="file" id="imagen">
+                                </div>
+                                <div class="grow ms-3">
+                                    <h6 class="mb-0 fw-semibold text-{{ $estado['color'] }}">
+                                        {{ $estado['nombre'] }}
+                                    </h6>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fs-4 fw-bold text-dark">{{ $conteoEstados[$key] }}</span>
+                                        <small class="text-muted">equipos</small>
                                     </div>
                                 </div>
-                            </form>
-                        </x-modal-base>
-
-                        <x-btn-descripcion id="modaldes" title="DESCRIPCION" size="modal-md">
-                        </x-btn-descripcion>
-                        <x-btn-imagen id="modalimg" title="IMAGEN" size="modal-md">
-                            <img src="https://humanidades.com/wp-content/uploads/2018/12/sistema-informatico-1-e1585504699254.jpg"
-                                class="img-fluid" alt="Imagen de ejemplo">
-                        </x-btn-imagen>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            @endforeach
+
+            <div class="col-12">
+                <div class="card border-primary border-2 shadow-sm mt-2">
+                    <div class="card-body p-3 text-center">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fa-solid fa-cubes fa-2x text-primary"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-semibold text-primary">TOTAL GENERAL</h6>
+                                <span class="fs-3 fw-bold text-dark">{{ $equipmentsAll->count() }}</span>
+                                <small class="text-muted d-block">equipos registrados</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
-        </x-card-header>
+    </x-card-header>
+</div>
+
+        </div>
+    </div>
     </div>
     </div>
 @endsection

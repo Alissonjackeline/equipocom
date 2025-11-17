@@ -21,31 +21,7 @@ class Supplier extends Model
     ];
 
     /**
-     * Scope para proveedores activos
-     */
-    public function scopeActive($query)
-    {
-        return $query->where('Status', 1);
-    }
-
-    /**
-     * Accessor para el estado
-     */
-    public function getStatusTextAttribute(): string
-    {
-        return $this->Status == 1 ? 'Activo' : 'Inactivo';
-    }
-
-    /**
-     * Accessor para la clase del badge
-     */
-    public function getStatusClassAttribute(): string
-    {
-        return $this->Status == 1 ? 'success' : 'danger';
-    }
-
-    /**
-     * Relación con Equipment (si la necesitas después)
+     * Relación con Equipment
      */
     public function equipment()
     {

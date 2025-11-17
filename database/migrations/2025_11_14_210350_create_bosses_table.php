@@ -17,7 +17,7 @@ return new class extends Migration
         $table->string('Name', 70);
         $table->string('Cargo', 70);
         $table->unsignedBigInteger('Area_id');
-        $table->string('Phone', 20)->nullable();
+        $table->string('Phone', 9);
          $table->tinyInteger('Status')->default(1);
         $table->timestamps();
 

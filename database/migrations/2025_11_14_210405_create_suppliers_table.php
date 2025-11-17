@@ -15,7 +15,7 @@ return new class extends Migration
         $table->id('idSupplier');
         $table->string('Company_name', 100);
         $table->string('Ruc', 11);
-        $table->string('Phone', 20)->nullable();
+        $table->string('Phone', 20);
         $table->string('Address', 70);
          $table->tinyInteger('Status')->default(1);
         $table->timestamps();

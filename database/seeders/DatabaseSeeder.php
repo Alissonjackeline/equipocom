@@ -17,13 +17,13 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
         $this->call([
-        EntitiesSeeder::class,
-           HeadquartersSeeder::class,
-           AreasSeeder::class,
-           BossesSeeder::class,
-           EquipmentTypeSeeder::class,
-           SupplierSeeder::class,
-           EquipmentSeeder::class,
+            //EntitiesSeeder::class,
+           // HeadquartersSeeder::class,
+           //AreasSeeder::class,
+           //BossesSeeder::class,
+           //EquipmentTypeSeeder::class,
+           //SupplierSeeder::class,
+           //EquipmentSeeder::class,
         ]);
     }
 }

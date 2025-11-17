@@ -1,7 +1,7 @@
 @props([
     'id',
     'title',
-    'size' => 'modal-sm', // Valor por defecto si no se especifica
+    'size' => 'modal-sm',
     'headerClass' => '',
     'footer' => null
 ])
@@ -10,7 +10,7 @@
     <div class="modal-dialog {{ $size }}">
         <div class="modal-content">
             <div class="modal-header {{ $headerClass }}" id="encabezado">
-                <i class="fa-solid fa-images"></i><h1 class="modal-title fs-5" id="{{ $id }}Label">{{ $title }}</h1>
+                <i class="fa-solid fa-images"></i><h1 class="modal-title fs-5" id="{{ $id }}Label"> {{ $title }}</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
