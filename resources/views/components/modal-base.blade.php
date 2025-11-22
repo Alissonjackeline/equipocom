@@ -4,7 +4,7 @@
     'size' => 'modal-sm',
     'headerClass' => '',
     'footer' => null,
-    'formId' => null  // Nueva prop para conectar el formulario
+    'formId' => null  
 ])
 
 <div class="modal fade" id="{{ $id }}" tabindex="-1" aria-labelledby="{{ $id }}Label" aria-hidden="true">

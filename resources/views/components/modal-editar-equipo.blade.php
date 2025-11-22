@@ -19,7 +19,7 @@
                     <div class="row g-3">
                         <div class="col-md-4">
                             <label class="form-label fw-semibold">Tipo de equipo:<span class="text-danger">*</span></label>
-                            <select class="form-select" name="EquipmentType_id" required>
+                            <select class="form-control selectpicker show-tick" data-size="5" data-live-search="true" name="EquipmentType_id" required>
                                 <option value="" disabled>Seleccionar tipo</option>
                                 @foreach ($equipmentTypes as $type)
                                     <option value="{{ $type->idEquipmentType }}"
@@ -80,7 +80,7 @@
 
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Estado:<span class="text-danger">*</span></label>
-                            <select class="form-select" name="status" required>
+                            <select class="form-control selectpicker show-tick" data-size="5" data-live-search="true" name="status" required>
                                 <option value="1" {{ $equipment->status == 1 ? 'selected' : '' }}>Disponible</option>
                                 <option value="2" {{ $equipment->status == 2 ? 'selected' : '' }}>Por preparar</option>
                                 <option value="3" {{ $equipment->status == 3 ? 'selected' : '' }}>En uso</option>
@@ -97,7 +97,7 @@
 
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Proveedor:<span class="text-danger">*</span></label>
-                            <select class="form-select" name="Supplier_id" required>
+                            <select class="form-control selectpicker show-tick" data-size="5" data-live-search="true" name="Supplier_id" required>
                                 <option value="" disabled>Seleccionar proveedor</option>
                                 @foreach ($suppliers as $supplier)
                                     <option value="{{ $supplier->idSupplier }}"

@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\AreaController;
-use App\Http\Controllers\AsignacionController;
+use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\BossController;
 use App\Http\Controllers\EquipmentTypeController;
 use App\Http\Controllers\SettingController;
@@ -23,7 +23,7 @@ Route::post('/', [loginController::class, 'login'])->name('login.submit');
 Route::get('/inventario/historial', [EquipmentController::class, 'historialinventario'])->name('inventario.historial');
 Route::resources([
     'inventario' => EquipmentController::class,
-    'asignacion' => AsignacionController::class,
+    'asignacion' => AssignmentController::class,
     'devolucion' => DevolucionController::class,
     'setting' => SettingController::class,
     'area' => AreaController::class,
@@ -34,4 +34,6 @@ Route::resources([
     'proveedor' => SupplierController::class,
     'entities' => EntitiesController::class,
     'rol' => RoleController::class,
+    
 ]);
+Route::get('/asignacion/search/equipment', [AssignmentController::class, 'searchEquipment'])->name('asignacion.search-equipment');

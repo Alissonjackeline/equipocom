@@ -132,10 +132,10 @@
                                         </x-btn-imagen>
 
                                         <td class="text-center">
-                                            <span class="badge bg-{{ $equipment->status_class }}">
-                                                <i class="fa-solid fa-circle me-1"></i>{{ $equipment->status_text }}
-                                            </span>
-                                        </td>
+    <span class="badge bg-{{ $equipment->status_class }}">
+        <i class="fa-solid {{ $equipment->status_icon }} me-1"></i>{{ $equipment->status_text }}
+    </span>
+</td>
 
                                         <td class="text-center">
                                             <span class="badge bg-purple text-white">
