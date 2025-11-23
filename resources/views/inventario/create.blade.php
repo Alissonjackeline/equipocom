@@ -6,7 +6,7 @@
 @endpush
 
 @section('content')
-    @include('layouts.partials.alert')
+@include('layouts.partials.alert')
 
     <div class="container-fluid">
         <div class="row pt-3">
@@ -118,10 +118,9 @@
                         <div class="col-md-3">
                             <label class="form-label fw-semibold" for="Price">
                                 Precio (S/):
-                                <span class="text-danger">*</span>
                             </label>
                             <input type="number" step="0.01" class="form-control" id="Price" name="Price"
-                                placeholder="0.00" value="{{ old('Price') }}" required>
+                                placeholder="0.00" value="{{ old('Price') }}">
                             @error('Price')
                                 <small class="text-danger">{{ '*' . $message }}</small>
                             @enderror

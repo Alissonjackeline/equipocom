@@ -13,7 +13,7 @@
                 <i class="fa-solid fa-images"></i><h1 class="modal-title fs-5" id="{{ $id }}Label"> {{ $title }}</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body text-center">
                 {{ $slot }}
             </div>
             <div class="modal-footer">

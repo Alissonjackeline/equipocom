@@ -310,12 +310,12 @@
                 </div>
             </x-card-header>
             <x-btn-documento id="modaldocu" title="DOCUMENTO" size="modal-md">
-                <embed src="https://www.temarium.com/serlibre/recursos/apuntes/Plan.Dis.Sistemas.Informac.pdf" type="application/pdf" width="100%" height="500px" />
+                <embed src="" type="application/pdf" width="100%" height="500px" />
             </x-btn-documento>
             <x-btn-descripcion id="modaldes" title="DESCRIPCION" size="modal-md">
             </x-btn-descripcion>
             <x-btn-imagen id="modalimg" title="IMAGEN" size="modal-md">
-    <img src="https://humanidades.com/wp-content/uploads/2018/12/sistema-informatico-1-e1585504699254.jpg" class="img-fluid" alt="Imagen de ejemplo">
+    <img src="" class="img-fluid" alt="Imagen de ejemplo">
 </x-btn-imagen>
 
 

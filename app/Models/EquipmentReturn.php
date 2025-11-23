@@ -17,7 +17,6 @@ class EquipmentReturn extends Model
         'Equipment_id',
         'User_id',
         'Date',
-        'Devolucion',
         'Document',
         'Image',
         'Comment',
@@ -26,7 +25,6 @@ class EquipmentReturn extends Model
 
     protected $casts = [
         'Date' => 'datetime',
-        'Devolucion' => 'boolean',
         'Status' => 'integer'
     ];
 
@@ -44,5 +42,10 @@ class EquipmentReturn extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'User_id', 'idUser');
+    }
+
+    public function boss()
+    {
+        return $this->belongsTo(Boss::class, 'User_id', 'idBoss');
     }
 }

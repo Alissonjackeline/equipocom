@@ -37,3 +37,6 @@ Route::resources([
     
 ]);
 Route::get('/asignacion/search/equipment', [AssignmentController::class, 'searchEquipment'])->name('asignacion.search-equipment');
+// En routes/web.php
+Route::get('/devolucion/boss-assignments/{bossId}', [DevolucionController::class, 'getBossAssignments'])->name('devolucion.boss-assignments');
+Route::post('/devolucion/store', [DevolucionController::class, 'store'])->name('devolucion.store');

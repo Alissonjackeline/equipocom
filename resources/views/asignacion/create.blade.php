@@ -3,10 +3,10 @@
 
 @push('css')
     <link href="{{ asset('Css/inventario.css') }}" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
 @endpush
 
 @section('content')
+@include('layouts.partials.alert')
 <div class="container-fluid">
     <div class="row pt-3">
         <x-card-header 
@@ -20,18 +20,10 @@
                     'variant' => 'persona'
                 ]
             ]">
-            
-            @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
 
-            <form action="{{ route('asignacion.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('asignacion.store') }}" method="POST" enctype="multipart/form-data" id="assignmentForm">
                 @csrf
                 <div class="row g-3">
-                    <!-- Fecha -->
                     <div class="col-md-3">
                         <label class="form-label fw-semibold" for="Date">
                             Fecha de entrega:
@@ -44,7 +36,6 @@
                         @enderror
                     </div>
 
-                    <!-- Usuario -->
                     <div class="col-md-3">
                         <label class="form-label fw-semibold" for="User_id">
                             Usuario:
@@ -64,7 +55,6 @@
                         @enderror
                     </div>
 
-                    <!-- Jefe que autoriza -->
                     <div class="col-md-3">
                         <label class="form-label fw-semibold" for="Boss_id">
                             Jefe que autoriza:
@@ -84,32 +74,36 @@
                         @enderror
                     </div>
 
-                    <!-- Búsqueda de equipos -->
                     <div class="col-md-3">
                         <label class="form-label fw-semibold" for="equipment_search">
-                            Buscar por serie o COD PATRI:
+                            Buscar por serie o codigo patrimonial:
                             <span class="text-danger">*</span>
                         </label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="equipment_search" 
                                    placeholder="Ingrese código patrimonial o serie">
-                            <button type="button" class="btn btn-secondary" onclick="searchEquipment()">
+                            <button type="button" class="btn btn-secondary" id="searchButton">
                                 <i class="fa-solid fa-magnifying-glass"></i>
                             </button>
                         </div>
                         <small class="text-muted">Solo se mostrarán equipos disponibles (Estado: Disponible)</small>
+                        <small class="text-info d-block mt-1">
+                            <i class="fa-solid fa-lightbulb"></i> Deje vacío y presione buscar para ver todos los equipos disponibles
+                        </small>
                     </div>
 
-                    <!-- Equipos seleccionados -->
                     <div class="col-12">
                         <label class="form-label fw-semibold">Equipos a asignar: <span class="text-danger">*</span></label>
                         <div id="selected_equipments" class="border rounded p-3 bg-light">
                             <p class="text-muted mb-0">No hay equipos seleccionados. Use la búsqueda para agregar equipos.</p>
                         </div>
                         
-                        <!-- Campos hidden para cada equipo seleccionado -->
                         <div id="equipment_inputs">
-                            <!-- Los inputs se generarán dinámicamente aquí -->
+                            @if(old('equipments'))
+                                @foreach(old('equipments') as $equipmentId)
+                                    <input type="hidden" name="equipments[]" value="{{ $equipmentId }}">
+                                @endforeach
+                            @endif
                         </div>
                         
                         @error('equipments')
@@ -117,7 +111,6 @@
                         @enderror
                     </div>
 
-                    <!-- Comentario -->
                     <div class="col-md-6">
                         <label class="form-label fw-semibold" for="Comment">
                             Comentario:
@@ -129,14 +122,13 @@
                         @enderror
                     </div>
 
-                    <!-- Documentos -->
                     <div class="col-md-3">
                         <label class="form-label fw-semibold" for="Document">
-                            Documento:
+                            Documento: <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" type="file" id="Document" name="Document" 
-                               accept=".pdf,.doc,.docx">
-                        <small class="text-muted">Formatos: PDF, DOC, DOCX (Max: 2MB)</small>
+                               accept=".pdf">
+                        <small class="text-muted">Formatos: PDF (Max: 2MB)</small>
                         @error('Document')
                             <small class="text-danger">{{ '*' . $message }}</small>
                         @enderror
@@ -167,7 +159,6 @@
     </div>
 </div>
 
-<!-- Modal para resultados de búsqueda -->
 <div class="modal fade" id="equipmentModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -187,23 +178,41 @@
 @endsection
 
 @push('js')
-<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
 <script>
-    let selectedEquipments = {{ json_encode(old('equipments', [])) }};
-    let equipmentData = {}; // Para almacenar información de los equipos
+    let selectedEquipments = @json(old('equipments', []));
+    let equipmentData = {};
+
+    async function loadSelectedEquipmentsData() {
+        if (selectedEquipments.length === 0) return;
+
+        try {
+            const response = await fetch(`{{ route('asignacion.search-equipment') }}?search=&get_selected=true&ids=${selectedEquipments.join(',')}`);
+            if (response.ok) {
+                const data = await response.json();
+                data.forEach(equipment => {
+                    equipmentData[equipment.idEquipment] = equipment;
+                });
+                updateSelectedEquipmentsDisplay();
+            }
+        } catch (error) {
+            console.error('Error cargando datos de equipos:', error);
+        }
+    }
 
     function searchEquipment() {
         const search = document.getElementById('equipment_search').value.trim();
-        if (!search) {
-            alert('Por favor ingrese un código patrimonial o serie para buscar');
-            return;
-        }
-
+        
         // Mostrar loading
         const resultsDiv = document.getElementById('equipmentResults');
         resultsDiv.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"></div><p class="mt-2">Buscando equipos disponibles...</p></div>';
 
-        fetch(`{{ route('asignacion.search-equipment') }}?search=${encodeURIComponent(search)}`)
+        let url = `{{ route('asignacion.search-equipment') }}?search=${encodeURIComponent(search)}`;
+        
+        if (selectedEquipments.length > 0) {
+            url += `&include_selected=true`;
+        }
+
+        fetch(url)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Error en la respuesta del servidor');
@@ -222,7 +231,6 @@
                 } else {
                     let html = '<div class="list-group">';
                     data.forEach(equipment => {
-                        // Almacenar datos del equipo
                         equipmentData[equipment.idEquipment] = equipment;
                         
                         const isSelected = selectedEquipments.includes(equipment.idEquipment.toString());
@@ -254,10 +262,14 @@
                         `;
                     });
                     html += '</div>';
-                    resultsDiv.innerHTML = html;
+                    
+                    const searchInfo = search ? 
+                        `<p class="text-muted mb-3">Mostrando ${data.length} equipos disponibles que coinciden con "${search}"</p>` :
+                        `<p class="text-muted mb-3">Mostrando todos los equipos disponibles (${data.length} equipos)</p>`;
+                    
+                    resultsDiv.innerHTML = searchInfo + html;
                 }
                 
-                // Mostrar modal
                 const modal = new bootstrap.Modal(document.getElementById('equipmentModal'));
                 modal.show();
             })
@@ -278,17 +290,14 @@
         const index = selectedEquipments.indexOf(equipmentId.toString());
         
         if (index === -1) {
-            // Agregar equipo
             selectedEquipments.push(equipmentId.toString());
         } else {
-            // Quitar equipo
             selectedEquipments.splice(index, 1);
         }
 
         updateSelectedEquipmentsDisplay();
         updateEquipmentInputs();
         
-        // Actualizar el botón en el modal
         const button = event.target;
         if (index === -1) {
             button.classList.remove('btn-success');
@@ -337,6 +346,28 @@
                         </div>
                     </div>
                 `;
+            } else {
+                html += `
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <div class="card border-warning">
+                            <div class="card-body py-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title mb-1">Equipo #${equipmentId}</h6>
+                                        <p class="card-text mb-0 small text-muted">
+                                            Cargando información...
+                                        </p>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-danger" 
+                                            onclick="removeEquipment(${equipmentId})"
+                                            title="Quitar equipo">
+                                        <i class="fa-solid fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
             }
         });
         html += '</div>';
@@ -345,12 +376,11 @@
 
     function updateEquipmentInputs() {
         const container = document.getElementById('equipment_inputs');
-        container.innerHTML = ''; // Limpiar inputs anteriores
-        
+        container.innerHTML = ''; 
         selectedEquipments.forEach(equipmentId => {
             const input = document.createElement('input');
             input.type = 'hidden';
-            input.name = 'equipments[]'; // Importante: usar [] para arrays
+            input.name = 'equipments[]';
             input.value = equipmentId;
             container.appendChild(input);
         });
@@ -365,19 +395,24 @@
         }
     }
 
-    // Inicializar display y selectpicker
     document.addEventListener('DOMContentLoaded', function() {
-        updateSelectedEquipmentsDisplay();
-        updateEquipmentInputs(); // Asegurar que los inputs se creen al cargar
         $('.selectpicker').selectpicker();
         
-        // Permitir búsqueda con Enter
+        document.getElementById('searchButton').addEventListener('click', searchEquipment);
+        
         document.getElementById('equipment_search').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 searchEquipment();
             }
         });
+        
+        if (selectedEquipments.length > 0) {
+            loadSelectedEquipmentsData();
+        } else {
+            updateSelectedEquipmentsDisplay();
+        }
+        updateEquipmentInputs();
     });
 </script>
 @endpush

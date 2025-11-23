@@ -57,7 +57,7 @@ public function index(Request $request)
             'Model' => 'required|string|max:50',
             'Brand' => 'required|string|max:50',
             'Description' => 'required|string|max:150',
-            'Price' => 'required|numeric|min:0|max:99999999.99',
+            'Price' => 'nullable|numeric|min:0|max:99999999.99',
             'Supplier_id' => 'required|integer|exists:suppliers,idSupplier',
             'status' => 'required|integer|between:1,8',
             'Imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'

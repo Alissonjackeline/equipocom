@@ -126,7 +126,7 @@
                                         </x-btn-descripcion>
 
                                         <x-btn-imagen id="modalimg{{ $equipment->idEquipment }}" title="IMAGEN"
-                                            size="modal-sm">
+                                            size="modal-md">
                                             <img src="{{ $equipment->image_url }}" class="img-fluid"
                                                 alt="Imagen del equipo">
                                         </x-btn-imagen>

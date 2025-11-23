@@ -144,7 +144,7 @@
                             confirmClass="{{ $boss->Status == 1 ? 'btn-danger' : 'btn-success' }}" />
 
                         <!-- Modal para editar -->
-                        <x-modal-base id="modalEditar{{ $boss->idBoss }}" title="Editar Jefe" size="modal-sm">
+                        <x-modal-base id="modalEditar{{ $boss->idBoss }}" title="Editar Jefe" size="modal-md">
                             <form action="{{ route('jefes.update', $boss->idBoss) }}" method="POST" class="row g-3">
                                 @csrf
                                 @method('PUT')

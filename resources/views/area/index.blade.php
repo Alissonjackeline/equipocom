@@ -96,7 +96,7 @@
                             confirmText="{{ $area->Status == 1 ? 'Desactivar' : 'Activar' }}"
                             confirmClass="{{ $area->Status == 1 ? 'btn-danger' : 'btn-success' }}" />
 
-                        <x-modal-base id="modalEditar{{ $area->idArea }}" title="Editar Area" size="modal-sm">
+                        <x-modal-base id="modalEditar{{ $area->idArea }}" title="Editar Area" size="modal-md">
                             <form action="{{ route('area.update', $area->idArea) }}" method="POST" class="row">
                                 @csrf
                                 @method('PUT')

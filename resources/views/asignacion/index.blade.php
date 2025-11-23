@@ -4,8 +4,8 @@
 @push('css')
     <link href="{{ asset('Css/inventario.css') }}" rel="stylesheet" />
 @endpush
-
 @section('content')
+    @include('layouts.partials.alert')
     <div class="container-fluid">
         <div class="row pt-3">
             <x-card-header title="LISTAR ASIGNACIONES" icon="fa-solid fa-file-circle-plus" :buttons="[
@@ -17,45 +17,54 @@
                 ],
             ]">
 
-                <form action="" method="POST">
-                    <div class="row g-3">
-                        <div class="col-md-2">
-                            <label class="form-label fw-semibold" for="desde">
-                                Desde:
-                                <span class="text-danger">*</span>
-                            </label>
-                            <input type="date" class="form-control" id="desde" name="desde" required>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label fw-semibold" for="hasta">
-                                Hasta:
-                                <span class="text-danger">*</span>
-                            </label>
-                            <input type="date" class="form-control" id="hasta" name="hasta" required>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label fw-semibold" for="area_id">
-                                Area
-                                <span class="text-danger">*</span>
-                            </label>
-                            <select class="form-select" id="area_id" name="area_id" required>
-                                <option value="" selected disabled>Seleccionar tipo de equipo</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label fw-semibold" for="usuario_id">
-                                Usuario
-                                <span class="text-danger">*</span>
-                            </label>
-                            <select class="form-select" id="usuario_id" name="usuario_id" required>
-                                <option value="" selected disabled>Seleccionar estado</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2 d-flex align-items-end">
-                            <button class="btn btn-primary">
-                                <i class="fa-solid fa-filter"></i>Filtrar
-                            </button>
-                        </div>
+                <form action="{{ route('asignacion.index') }}" method="GET" class="row g-3">
+                    <div class="col-md-2">
+                        <label class="form-label fw-semibold" for="desde">
+                            Desde:
+                        </label>
+                        <input type="date" class="form-control" id="desde" name="desde"
+                            value="{{ request('desde') }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label fw-semibold" for="hasta">
+                            Hasta:
+                        </label>
+                        <input type="date" class="form-control" id="hasta" name="hasta"
+                            value="{{ request('hasta') }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold" for="usuario_id">
+                            Usuario
+                        </label>
+                        <select class="form-control selectpicker" data-size="5" data-live-search="true" id="usuario_id"
+                            name="usuario_id">
+                            <option value="">Todos los usuarios</option>
+                            @foreach ($users ?? [] as $user)
+                                <option value="{{ $user->idUser }}"
+                                    {{ request('usuario_id') == $user->idUser ? 'selected' : '' }}>
+                                    {{ $user->Name }} - {{ $user->Document }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold" for="estado">
+                            Estado
+                        </label>
+                        <select class="form-control selectpicker" data-size="5" data-live-search="true" id="estado"
+                            name="estado">
+                            <option value="">Todos los estados</option>
+                            <option value="1" {{ request('estado') == '1' ? 'selected' : '' }}>Activo</option>
+                            <option value="0" {{ request('estado') == '0' ? 'selected' : '' }}>Inactivo</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-primary me-2">
+                            <i class="fa-solid fa-filter"></i> Filtrar
+                        </button>
+                        <a href="{{ route('asignacion.index') }}" class="btn btn-secondary">
+                            <i class="fa-solid fa-refresh"></i>
+                        </a>
                     </div>
                 </form>
 
@@ -66,155 +75,265 @@
             <div class="col-lg-12">
                 <x-data-table :columns="[
                     ['label' => 'FECHA ASIGNACION', 'class' => 'text-center'],
-                    ['label' => 'EQUIPO', 'class' => 'text-center'],
-                    ['label' => 'ASIGNADO', 'class' => 'text-center'],
+                    ['label' => 'EQUIPOS ASIGNADOS', 'class' => 'text-center'],
+                    ['label' => 'USUARIO ASIGNADO', 'class' => 'text-center'],
+                    ['label' => 'JEFE AUTORIZADOR', 'class' => 'text-center'],
                     ['label' => 'DOCUMENTO/COMENTARIO/IMAGEN', 'class' => 'text-center'],
-                    ['label' => 'ESTADO', 'class' => 'text-center'],
-                    ['label' => 'USUARIO', 'class' => 'text-center'],
                     ['label' => 'ACCIONES', 'class' => 'text-center'],
                 ]" table-id="example">
 
-                    <!-- Aquí van las filas de la tabla -->
-                    <tr>
-                        <td class="text-center">
-                            <span class="badge bg-info text-white">17/05/2025</span>
-                        </td>
-                        <td>
-                            <div class="mb-1">
-                                <span class="info-label">Tipo</span>
-                                <span class="info-value">laptop</span>
-                            </div>
-                            <div class="mb-1">
-                                <span class="info-label">Código Patrimonial</span>
-                                <span class="info-value">CP-2024-001</span>
-                            </div>
-                            <div class="mb-1">
-                                <span class="info-label">Serie</span>
-                                <span class="info-value">SN123456789</span>
-                            </div>
-                            <div class="mb-1">
-                                <span class="info-label">Modelo</span>
-                                <span class="info-value">HP EliteDesk 800 G5</span>
-                            </div>
-                            <div>
-                                <span class="info-label">Marca</span>
-                                <span class="info-value">HP</span>
-                            </div>
-                        </td>
-                        <td class="text-center">
-                            <div class="mb-1">
-                                <span class="info-asigtable">NOMBRES Y APELLIDOS</span><br />
-                                <span class="info-asigtable">DNI</span><br />
-                                <span class="info-asigtable">OFICINA DE ADMINISTRACION</span>
-                            </div>
-                        </td>
-                        <td class="text-center">
-                            <button class="btn btn-primary btn-circle action-btn" data-bs-toggle="modal"
-                                data-bs-target="#modaldocu" title="Ver Documento">
-                                <i class="fa-solid fa-file-lines"></i>
-                            </button>
-                            <button class="btn btn-danger btn-circle action-btn" title="Ver descripción"
-                                data-bs-toggle="modal" data-bs-target="#modaldes">
-                                <i class="fa-solid fa-message"></i>
-                            </button>
-                            <button class="btn btn-dark btn-circle action-btn" title="Ver imágenes" data-bs-toggle="modal"
-                                data-bs-target="#modalimg">
-                                <i class="fa-solid fa-images"></i>
-                            </button>
-                        </td>
-                        <td class="text-center">
-                            <span class="badge bg-success">
-                                <i class="fa-solid fa-circle-check me-1"></i>En uso
-                            </span>
-                        </td>
-                        <td class="text-center">
-                            <span class="badge bg-purple text-white">
-                                <i class="fa-solid fa-user me-1"></i>JUAN C
-                            </span>
-                        </td>
-                        <td class="text-center">
-                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditar"
-                                title="Editar">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                                <button class="btn btn-danger btn-sm action-btn" title="Eliminar">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                        </td>
-                    </tr>
+                    @foreach ($assignments as $assignment)
+                        <tr>
+                            <td class="text-center">
+                                <span class="badge bg-info text-white">
+                                    {{ $assignment->Date->format('d/m/Y H:i') }}
+                                </span>
+                            </td>
+                            <td>
+                                @foreach ($assignment->assignedTeams as $assignedTeam)
+                                    <div class="mb-2 p-2 border rounded bg-light">
+                                        <div class="mb-1">
+                                            <span class="info-label">Tipo</span>
+                                            <span
+                                                class="info-value">{{ $assignedTeam->equipment->equipmentType->Name ?? 'N/A' }}</span>
+                                        </div>
+                                        <div class="mb-1">
+                                            <span class="info-label">Código Patrimonial</span>
+                                            <span class="info-value">{{ $assignedTeam->equipment->CodigoPatri }}</span>
+                                        </div>
+                                        <div class="mb-1">
+                                            <span class="info-label">Serie</span>
+                                            <span class="info-value">{{ $assignedTeam->equipment->Series }}</span>
+                                        </div>
+                                        <div class="mb-1">
+                                            <span class="info-label">Modelo</span>
+                                            <span class="info-value">{{ $assignedTeam->equipment->Model }}</span>
+                                        </div>
+                                        <div class="mb-1">
+                                            <span class="info-label">Marca</span>
+                                            <span class="info-value">{{ $assignedTeam->equipment->Brand }}</span>
+                                        </div>
+                                        <div>
+                                            <span class="info-label">Estado</span>
+                                            <span class="badge {{ $assignedTeam->Status ? 'bg-success' : 'bg-danger' }}">
+                                                <i
+                                                    class="fa-solid {{ $assignedTeam->Status ? 'fa-circle-check' : 'fa-circle-xmark' }} me-1"></i>
+                                                {{ $assignedTeam->Status ? 'Activo' : 'Inactivo' }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </td>
+                            <td class="text-center">
+                                <div class="mb-1">
+                                    <span class="info-asigtable">{{ $assignment->user->Name }}</span><br />
+                                    <span class="info-asigtable">DNI: {{ $assignment->user->Document }}</span><br />
+                                    <span class="info-asigtable text-muted small">
+                                        {{ $assignment->user->Email }}
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <div class="mb-1">
+                                    <span class="info-asigtable">{{ $assignment->boss->Name }}</span><br />
+                                    <span class="info-asigtable">DNI: {{ $assignment->boss->Document }}</span><br />
+                                    <span class="info-asigtable text-muted small">
+                                        {{ $assignment->boss->Cargo }}
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                @if ($assignment->Document)
+                                    <button class="btn btn-primary btn-circle action-btn" data-bs-toggle="modal"
+                                        data-bs-target="#modalDocu{{ $assignment->idAssignment }}" title="Ver Documento">
+                                        <i class="fa-solid fa-file-lines"></i>
+                                    </button>
+                                @endif
+
+                                @if ($assignment->Comment)
+                                    <button class="btn btn-danger btn-circle action-btn" title="Ver descripción"
+                                        data-bs-toggle="modal" data-bs-target="#modalDes{{ $assignment->idAssignment }}">
+                                        <i class="fa-solid fa-message"></i>
+                                    </button>
+                                @endif
+
+                                @if ($assignment->Image)
+                                    <button class="btn btn-dark btn-circle action-btn" title="Ver imágenes"
+                                        data-bs-toggle="modal" data-bs-target="#modalImg{{ $assignment->idAssignment }}">
+                                        <i class="fa-solid fa-images"></i>
+                                    </button>
+                                @endif
+
+                                @if (!$assignment->Document && !$assignment->Comment && !$assignment->Image)
+                                    <span class="text-muted small">Sin archivos</span>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#modalEditar{{ $assignment->idAssignment }}" title="Editar">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#modalEliminar{{ $assignment->idAssignment }}" title="Eliminar">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
 
                 </x-data-table>
-                <x-modal-base id="modalEditar" title="Editar Asignacion" size="modal-md">
-                    <form action="" method="POST">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold" for="fecha">
-                                    Fecha:
-                                    <span class="text-danger">*</span>
-                                </label>
-                                <input type="date" class="form-control" id="fecha" name="fecha" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold" for="asignado_id">
-                                    Asignado:
-                                    <span class="text-danger">*</span>
-                                </label>
-                                <select class="form-select" id="asignado_id" name="asignado_id" required>
-                                    <option value="" selected disabled>Seleccionar asignado</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold" for="equipo_id">
-                                    Equipo:
-                                    <span class="text-danger">*</span>
-                                </label>
-                                <select class="form-select" id="equipo_id" name="equipo_id" required>
-                                    <option value="" selected disabled>Seleccionar equipo</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold" for="estado">
-                                    Estado:
-                                    <span class="text-danger">*</span>
-                                </label>
-                                <select class="form-select" id="estado" name="estado" required>
-                                    <option value="" selected disabled>Seleccionar Estado</option>
-                                </select>
-                            </div>
-                            <div class="col-md-12">
-                                <label class="form-label fw-semibold" for="comentario">
-                                    Comentario:
-                                </label>
-                                <textarea type="text" class="form-control" id="comentario" name="comentario"></textarea>
-                            </div>
-                            <div class="col-md-12">
-                                <label class="form-label fw-semibold" for="imagen">
-                                    Imagen:
-                                </label>
-                                <input class="form-control" type="file" id="imagen">
-                            </div>
-                            <div class="col-md-12">
-                                <label class="form-label fw-semibold" for="documento">
-                                    Documento:<span class="text-danger">*</span>
-                                </label>
-                                <input class="form-control" type="file" id="documento">
-                            </div>
-                        </div>
-                    </form>
-                </x-modal-base>
-                <x-btn-documento id="modaldocu" title="DOCUMENTO" size="modal-md">
-                    <embed src="https://www.temarium.com/serlibre/recursos/apuntes/Plan.Dis.Sistemas.Informac.pdf"
-                        type="application/pdf" width="100%" height="500px" />
-                </x-btn-documento>
-                <x-btn-descripcion id="modaldes" title="DESCRIPCION" size="modal-md">
-                </x-btn-descripcion>
-                <x-btn-imagen id="modalimg" title="IMAGEN" size="modal-md">
-                    <img src="https://humanidades.com/wp-content/uploads/2018/12/sistema-informatico-1-e1585504699254.jpg"
-                        class="img-fluid" alt="Imagen de ejemplo">
-                </x-btn-imagen>
             </div>
         </div>
     </div>
     </div>
+
+    @foreach ($assignments as $assignment)
+        <x-modal-base id="modalEditar{{ $assignment->idAssignment }}"
+            title="Editar Asignación #{{ $assignment->idAssignment }}" size="modal-lg"
+            formId="formEditar{{ $assignment->idAssignment }}">
+            <form action="{{ route('asignacion.update', $assignment->idAssignment) }}" method="POST"
+                enctype="multipart/form-data" id="formEditar{{ $assignment->idAssignment }}">
+                @csrf
+                @method('PUT')
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" for="Date{{ $assignment->idAssignment }}">
+                            Fecha de entrega:
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input type="datetime-local" class="form-control" id="Date{{ $assignment->idAssignment }}"
+                            name="Date" value="{{ old('Date', $assignment->Date->format('Y-m-d\TH:i')) }}" required>
+                        @error('Date')
+                            <small class="text-danger">{{ '*' . $message }}</small>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" for="User_id{{ $assignment->idAssignment }}">
+                            Usuario:
+                        </label>
+                        <input type="text" class="form-control"
+                            value="{{ $assignment->user->Document }} - {{ $assignment->user->Name }}" disabled>
+                        <input type="hidden" name="User_id" value="{{ $assignment->user->idUser }}">
+                        <small class="text-muted">El usuario no se puede modificar</small>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" for="Boss_id{{ $assignment->idAssignment }}">
+                            Jefe que autoriza:
+                            <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-control selectpicker" data-size="5" data-live-search="true"
+                            id="Boss_id{{ $assignment->idAssignment }}" name="Boss_id" required>
+                            <option value="" disabled>Seleccionar jefe</option>
+                            @foreach ($bosses as $boss)
+                                <option value="{{ $boss->idBoss }}"
+                                    {{ $assignment->Boss_id == $boss->idBoss ? 'selected' : '' }}>
+                                    {{ $boss->Document }} - {{ $boss->Name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('Boss_id')
+                            <small class="text-danger">{{ '*' . $message }}</small>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">
+                            Estado de la asignación:
+                        </label>
+                        @php
+                            $allActive = $assignment->assignedTeams->every(function ($assignedTeam) {
+                                return $assignedTeam->Status == 1;
+                            });
+                        @endphp
+                        <input type="text" class="form-control" value="{{ $allActive ? 'Activo' : 'Inactivo' }}"
+                            disabled>
+                        <small class="text-muted">El estado se basa en los equipos asignados</small>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label fw-semibold" for="Comment{{ $assignment->idAssignment }}">
+                            Comentario:
+                        </label>
+                        <textarea class="form-control" id="Comment{{ $assignment->idAssignment }}" name="Comment" rows="3"
+                            placeholder="Observaciones o comentarios sobre la asignación">{{ old('Comment', $assignment->Comment) }}</textarea>
+                        @error('Comment')
+                            <small class="text-danger">{{ '*' . $message }}</small>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" for="Document{{ $assignment->idAssignment }}">
+                            Documento:<span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control" type="file" id="Document{{ $assignment->idAssignment }}"
+                            name="Document" accept=".pdf,.doc,.docx">
+                        <small class="text-muted">Formatos: PDF, DOC, DOCX (Max: 2MB)</small>
+                        @if ($assignment->Document)
+                            <div class="mt-1">
+                                <small class="text-success">
+                                    <i class="fa-solid fa-file"></i> Documento actual:
+                                    <a href="{{ asset('storage/' . $assignment->Document) }}" target="_blank">Ver
+                                        documento</a>
+                                </small>
+                            </div>
+                        @endif
+                        @error('Document')
+                            <small class="text-danger">{{ '*' . $message }}</small>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" for="Image{{ $assignment->idAssignment }}">
+                            Imagen:
+                        </label>
+                        <input class="form-control" type="file" id="Image{{ $assignment->idAssignment }}"
+                            name="Image" accept="image/jpeg,image/png,image/jpg">
+                        <small class="text-muted">Formatos: JPG, PNG (Max: 2MB)</small>
+                        @if ($assignment->Image)
+                            <div class="mt-1">
+                                <small class="text-success">
+                                    <i class="fa-solid fa-image"></i> Imagen actual disponible
+                                </small>
+                            </div>
+                        @endif
+                        @error('Image')
+                            <small class="text-danger">{{ '*' . $message }}</small>
+                        @enderror
+                    </div>
+                </div>
+            </form>
+        </x-modal-base>
+        <x-modal-delete-assignment id="modalEliminar{{ $assignment->idAssignment }}"
+            assignmentId="{{ $assignment->idAssignment }}"
+            action="{{ route('asignacion.destroy', $assignment->idAssignment) }}" />
+        @if ($assignment->Document)
+            <x-btn-documento id="modalDocu{{ $assignment->idAssignment }}"
+                title="DOCUMENTO - Asignación #{{ $assignment->idAssignment }}" size="modal-lg">
+                <embed src="{{ asset('storage/' . $assignment->Document) }}" type="application/pdf" width="100%"
+                    height="600px" />
+            </x-btn-documento>
+        @endif
+
+        @if ($assignment->Comment)
+            <x-btn-descripcion id="modalDes{{ $assignment->idAssignment }}"
+                title="COMENTARIO - Asignación #{{ $assignment->idAssignment }}" size="modal-md">
+                <p class="text-justify">{{ $assignment->Comment }}</p>
+            </x-btn-descripcion>
+        @endif
+
+        @if ($assignment->Image)
+            <x-btn-imagen id="modalImg{{ $assignment->idAssignment }}"
+                title="IMAGEN - Asignación #{{ $assignment->idAssignment }}" size="modal-lg">
+                <img src="{{ asset('storage/' . $assignment->Image) }}" class="img-fluid" alt="Imagen de la asignación">
+            </x-btn-imagen>
+        @endif
+    @endforeach
+
 @endsection
 
 @push('js')

@@ -13,124 +13,131 @@ use Illuminate\Support\Facades\Storage;
 
 class AssignmentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        $assignments = Assignment::with(['user', 'boss', 'assignedTeams.equipment'])
-            ->orderBy('created_at', 'desc')
-            ->get();
-            
-        return view('asignacion.index', compact('assignments'));
+  public function index(Request $request)
+{
+    $query = Assignment::with(['user', 'boss', 'assignedTeams.equipment.equipmentType']);
+
+    // Filtros
+    if ($request->filled('desde')) {
+        $query->whereDate('Date', '>=', $request->desde);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-{
-    // Obtener usuarios activos
+    if ($request->filled('hasta')) {
+        $query->whereDate('Date', '<=', $request->hasta);
+    }
+
+    if ($request->filled('usuario_id')) {
+        $query->where('User_id', $request->usuario_id);
+    }
+
+    if ($request->filled('estado')) {
+        // Filtrar por estado de assigned_team
+        $query->whereHas('assignedTeams', function($q) use ($request) {
+            $q->where('Status', $request->estado);
+        });
+    }
+
+    $assignments = $query->orderBy('created_at', 'desc')->get();
+    
+    // Obtener datos para los filtros y modales
     $users = User::where('Status', 1)->get();
-    
-    // Obtener jefes activos
     $bosses = Boss::where('Status', 1)->get();
-    
-    // Obtener equipos disponibles (estado 1 = Disponible) y que no estén asignados
-    $equipments = Equipment::where('status', 1)->get();
 
-    return view('asignacion.create', compact('users', 'bosses', 'equipments'));
+    return view('asignacion.index', compact('assignments', 'users', 'bosses'));
 }
+    public function create()
+    {
+        $users = User::where('Status', 1)->get();
+        $bosses = Boss::where('Status', 1)->get();
+        $equipments = Equipment::where('status', 1)->get();
 
-    /**
-     * Store a newly created resource in storage.
-     */
+        return view('asignacion.create', compact('users', 'bosses', 'equipments'));
+    }
+
     public function store(Request $request)
-{
-    $request->validate([
-        'User_id' => 'required|exists:users,idUser',
-        'Boss_id' => 'required|exists:bosses,idBoss',
-        'Date' => 'required|date',
-        'equipments' => 'required|array|min:1',
-        'equipments.*' => 'exists:equipment,idEquipment',
-        'Comment' => 'nullable|string|max:150',
-        'Document' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
-        'Image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
-    ]);
-
-    try {
-        DB::beginTransaction();
-
-        // 1. Crear la asignación principal
-        $assignment = Assignment::create([
-            'User_id' => $request->User_id,
-            'Boss_id' => $request->Boss_id,
-            'Date' => $request->Date,
-            'Comment' => $request->Comment,
-            'Status' => 1
+    {
+        $request->validate([
+            'User_id' => 'required|exists:users,idUser',
+            'Boss_id' => 'required|exists:bosses,idBoss',
+            'Date' => 'required|date',
+            'equipments' => 'required|array|min:1',
+            'equipments.*' => 'exists:equipment,idEquipment',
+            'Comment' => 'nullable|string|max:150',
+            'Document' => 'required|file|mimes:pdf|max:2048',
+            'Image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
-        // Subir documentos si existen
-        if ($request->hasFile('Document')) {
-            $documentPath = $request->file('Document')->store('documents/assignments', 'public');
-            $assignment->update(['Document' => $documentPath]);
-        }
+        try {
+            DB::beginTransaction();
 
-        if ($request->hasFile('Image')) {
-            $imagePath = $request->file('Image')->store('images/assignments', 'public');
-            $assignment->update(['Image' => $imagePath]);
-        }
+            $documentPath = null;
+            $imagePath = null;
+            $currentDate = now()->format('Ymd_His');
 
-        // 2. Asignar equipos en assigned_team y actualizar estado
-        foreach ($request->equipments as $equipmentId) {
-            // Verificar que el equipo esté disponible
-            $equipment = Equipment::where('idEquipment', $equipmentId)
-                ->where('status', 1)
-                ->first();
-
-            if ($equipment) {
-                // Crear relación en assigned_team
-                AssignedTeam::create([
-                    'Equipment_id' => $equipmentId,
-                    'Assignment_id' => $assignment->idAssignment,
-                    'Status' => 1
-                ]);
-
-                // Actualizar estado del equipo a "En uso" (estado 3)
-                $equipment->update(['status' => 3]);
+            // Procesar documento
+            if ($request->hasFile('Document')) {
+                $documentFile = $request->file('Document');
+                $documentName = 'documento_' . $currentDate . '_' . uniqid() . '.' . $documentFile->getClientOriginalExtension();
+                $documentPath = $documentFile->storeAs('documents/assignments', $documentName, 'public');
             }
+
+            // Procesar imagen
+            if ($request->hasFile('Image')) {
+                $imageFile = $request->file('Image');
+                $imageName = 'imagen_' . $currentDate . '_' . uniqid() . '.' . $imageFile->getClientOriginalExtension();
+                $imagePath = $imageFile->storeAs('images/assignments', $imageName, 'public');
+            }
+
+            // Crear la asignación
+            $assignment = Assignment::create([
+                'User_id' => $request->User_id,
+                'Boss_id' => $request->Boss_id,
+                'Date' => $request->Date,
+                'Comment' => $request->Comment,
+                'Document' => $documentPath, 
+                'Image' => $imagePath, 
+                'Status' => 1
+            ]);
+
+            // Asignar equipos
+            foreach ($request->equipments as $equipmentId) {
+                $equipment = Equipment::where('idEquipment', $equipmentId)
+                    ->where('status', 1)
+                    ->first();
+
+                if ($equipment) {
+                    AssignedTeam::create([
+                        'Equipment_id' => $equipmentId,
+                        'Assignment_id' => $assignment->idAssignment,
+                        'Status' => 1
+                    ]);
+
+                    $equipment->update(['status' => 3]);
+                }
+            }
+
+            DB::commit();
+
+            return redirect()->route('asignacion.create')
+                ->with('success', 'Asignación creada exitosamente.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+            // Limpiar archivos en caso de error
+            if ($documentPath && Storage::disk('public')->exists($documentPath)) {
+                Storage::disk('public')->delete($documentPath);
+            }
+            if ($imagePath && Storage::disk('public')->exists($imagePath)) {
+                Storage::disk('public')->delete($imagePath);
+            }
+
+            return redirect()->back()
+                ->with('error', 'Error al crear la asignación: ' . $e->getMessage())
+                ->withInput();
         }
-
-        DB::commit();
-
-        return redirect()->route('asignacion.index')
-            ->with('success', 'Asignación creada exitosamente.');
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return redirect()->back()
-            ->with('error', 'Error al crear la asignación: ' . $e->getMessage())
-            ->withInput();
-    }
-}
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        $assignment = Assignment::with([
-            'user', 
-            'boss', 
-            'assignedTeams.equipment'
-        ])->findOrFail($id);
-        
-        return view('asignacion.show', compact('assignment'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $assignment = Assignment::with('assignedTeams.equipment')->findOrFail($id);
@@ -141,9 +148,6 @@ class AssignmentController extends Controller
         return view('asignacion.edit', compact('assignment', 'users', 'bosses', 'equipments'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $assignment = Assignment::findOrFail($id);
@@ -153,38 +157,49 @@ class AssignmentController extends Controller
             'Boss_id' => 'required|exists:bosses,idBoss',
             'Date' => 'required|date',
             'Comment' => 'nullable|string|max:150',
-            'Document' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+            'Document' => 'nullable|file|mimes:pdf|max:2048',
             'Image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
         try {
             DB::beginTransaction();
 
-            $assignment->update([
+            $updateData = [
                 'User_id' => $request->User_id,
                 'Boss_id' => $request->Boss_id,
                 'Date' => $request->Date,
                 'Comment' => $request->Comment
-            ]);
+            ];
 
-            // Actualizar documentos si se proporcionan nuevos
+            $currentDate = now()->format('Ymd_His');
+
+            // Procesar nuevo documento
             if ($request->hasFile('Document')) {
                 // Eliminar documento anterior si existe
                 if ($assignment->Document) {
                     Storage::disk('public')->delete($assignment->Document);
                 }
-                $documentPath = $request->file('Document')->store('documents/assignments', 'public');
-                $assignment->update(['Document' => $documentPath]);
+                
+                $documentFile = $request->file('Document');
+                $documentName = 'documento_' . $currentDate . '_' . uniqid() . '.' . $documentFile->getClientOriginalExtension();
+                $documentPath = $documentFile->storeAs('documents/assignments', $documentName, 'public');
+                $updateData['Document'] = $documentPath;
             }
 
+            // Procesar nueva imagen
             if ($request->hasFile('Image')) {
                 // Eliminar imagen anterior si existe
                 if ($assignment->Image) {
                     Storage::disk('public')->delete($assignment->Image);
                 }
-                $imagePath = $request->file('Image')->store('images/assignments', 'public');
-                $assignment->update(['Image' => $imagePath]);
+                
+                $imageFile = $request->file('Image');
+                $imageName = 'imagen_' . $currentDate . '_' . uniqid() . '.' . $imageFile->getClientOriginalExtension();
+                $imagePath = $imageFile->storeAs('images/assignments', $imageName, 'public');
+                $updateData['Image'] = $imagePath;
             }
+
+            $assignment->update($updateData);
 
             DB::commit();
 
@@ -199,25 +214,20 @@ class AssignmentController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         try {
             DB::beginTransaction();
 
             $assignment = Assignment::findOrFail($id);
-
-            // Obtener equipos asignados para revertir su estado
             $assignedEquipments = AssignedTeam::where('Assignment_id', $id)->pluck('Equipment_id');
-
-            // Revertir estado de equipos a "Disponible" (estado 1)
+            
+            // Revertir estado de equipos
             Equipment::whereIn('idEquipment', $assignedEquipments)->update(['status' => 1]);
-
-            // Eliminar registros relacionados en assigned_team
+            
+            // Eliminar relaciones
             AssignedTeam::where('Assignment_id', $id)->delete();
-
+            
             // Eliminar archivos
             if ($assignment->Document) {
                 Storage::disk('public')->delete($assignment->Document);
@@ -225,8 +235,8 @@ class AssignmentController extends Controller
             if ($assignment->Image) {
                 Storage::disk('public')->delete($assignment->Image);
             }
-
-            // Eliminar la asignación
+            
+            // Eliminar asignación
             $assignment->delete();
 
             DB::commit();
@@ -241,7 +251,6 @@ class AssignmentController extends Controller
         }
     }
 
-    // Método para buscar equipos disponibles por código patrimonial o serie
     public function searchEquipment(Request $request)
     {
         $search = $request->get('search');
@@ -256,14 +265,12 @@ class AssignmentController extends Controller
         return response()->json($equipments);
     }
 
-    // Método para obtener datos del usuario
     public function getUserData(Request $request)
     {
         $user = User::find($request->id);
         return response()->json($user);
     }
 
-    // Método para cambiar estado de la asignación
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
