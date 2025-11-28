@@ -16,27 +16,38 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
 
-Route::get('/', [LoginController::class, 'index'])->name('login');
-Route::get('/panel', [homeController::class, 'index'])->name('panel');
-Route::post('/', [loginController::class, 'login'])->name('login.submit');
+// Rutas públicas (EXACTAMENTE como en el ejemplo que funciona)
+Route::get('/login', [LoginController::class, 'index'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
+Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::get('/inventario/historial', [EquipmentController::class, 'historialinventario'])->name('inventario.historial');
-Route::resources([
-    'inventario' => EquipmentController::class,
-    'asignacion' => AssignmentController::class,
-    'devolucion' => DevolucionController::class,
-    'setting' => SettingController::class,
-    'area' => AreaController::class,
-    'sede' => HeadquartersController::class,
-    'jefes' => BossController::class,
-    'user' => UserController::class,
-    'tipoequipo' => EquipmentTypeController::class,
-    'proveedor' => SupplierController::class,
-    'entities' => EntitiesController::class,
-    'rol' => RoleController::class,
+// Redirigir raíz al login
+Route::get('/', function () {
+    return redirect()->route('login');
+});
+
+// Rutas protegidas
+Route::middleware(['auth'])->group(function () {
+    Route::get('/panel', [homeController::class, 'index'])->name('panel');
     
-]);
-Route::get('/asignacion/search/equipment', [AssignmentController::class, 'searchEquipment'])->name('asignacion.search-equipment');
-// En routes/web.php
-Route::get('/devolucion/boss-assignments/{bossId}', [DevolucionController::class, 'getBossAssignments'])->name('devolucion.boss-assignments');
-Route::post('/devolucion/store', [DevolucionController::class, 'store'])->name('devolucion.store');
+    Route::get('/inventario/historial', [EquipmentController::class, 'historialinventario'])->name('inventario.historial');
+    
+    Route::resources([
+        'inventario' => EquipmentController::class,
+        'asignacion' => AssignmentController::class,
+        'devolucion' => DevolucionController::class,
+        'setting' => SettingController::class,
+        'area' => AreaController::class,
+        'sede' => HeadquartersController::class,
+        'jefes' => BossController::class,
+        'user' => UserController::class,
+        'tipoequipo' => EquipmentTypeController::class,
+        'proveedor' => SupplierController::class,
+        'entities' => EntitiesController::class,
+        'rol' => RoleController::class,
+    ]);
+    
+    Route::get('/asignacion/search/equipment', [AssignmentController::class, 'searchEquipment'])->name('asignacion.search-equipment');
+    Route::get('/devolucion/boss-assignments/{bossId}', [DevolucionController::class, 'getBossAssignments'])->name('devolucion.boss-assignments');
+    Route::post('/devolucion/store', [DevolucionController::class, 'store'])->name('devolucion.store');
+});

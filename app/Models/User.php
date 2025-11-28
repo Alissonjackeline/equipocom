@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class User extends Model
+class User extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $table = 'users';
     
@@ -27,6 +28,15 @@ class User extends Model
     protected $hidden = [
         'Password'
     ];
+
+    /**
+     * Get the password for the user.
+     * Esto es necesario porque tu columna se llama 'Password' en lugar de 'password'
+     */
+    public function getAuthPassword()
+    {
+        return $this->Password;
+    }
 
     /**
      * Relación con las asignaciones

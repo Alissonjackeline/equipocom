@@ -7,10 +7,8 @@
     <title>Control de equipos</title>
     <link rel="icon" href="{{ asset('img/inventario.png') }}" type="image/x-icon">
     <link href="{{ asset('bootstrap/css/bootstrap.css') }}" rel="stylesheet" />
-        <link href="{{ asset('css/login.css') }}" rel="stylesheet" />
-
+    <link href="{{ asset('css/login.css') }}" rel="stylesheet" />
     <script src="{{ asset('js/sweetalert.js') }}"></script>
-    
 </head>
 
 <body>
@@ -25,29 +23,53 @@
 
             <div class="col-12 col-md-4 d-flex justify-content-center align-items-center" style="background: #f8f9fa;">
                 <div style="max-width: 420px; width: 90%;">
-                     <form id="login-form" action="{{ route('login.submit') }}" method="post">
+                    <!-- CAMBIO IMPORTANTE: action a /login (POST) -->
+                    <form id="login-form" action="/login" method="post">
                         @csrf
                         <div class="logo-container text-center">
                             <img src="{{ asset('img/LOGO.png') }}" alt="icono" style="width: 200px;">
                         </div>
-                        
-                        
+
                         <h6 class="welcome-title text-center">
                             Bienvenido al sistema de gestion para el control de asignacion de equipos de computo 👋
                         </h6>
+                        
+                        @if ($errors->any())
+                            @foreach ($errors->all() as $item)
+                                <script>
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Oops...",
+                                        text: "{{ $item }}",
+                                    });
+                                </script>
+                            @endforeach
+                        @endif
+
+                        @if(session('success'))
+                            <script>
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "¡Éxito!",
+                                    text: "{{ session('success') }}",
+                                });
+                            </script>
+                        @endif
 
                         <div class="mb-3">
                             <label class="form-label">Email<span class="text-danger">*</span></label>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="correo@ejemplo.com" required>
+                            <input type="email" class="form-control" id="Email" name="Email"
+                                placeholder="correo@ejemplo.com" value="{{ old('Email') }}" required>
                         </div>
 
                         <div class="mb-4">
                             <label class="form-label">Contraseña<span class="text-danger">*</span></label>
-                            <input type="password" class="form-control" id="password" name="password" placeholder="••••••••" required>
+                            <input type="password" class="form-control" id="Password" name="Password"
+                                placeholder="••••••••" required>
                         </div>
-                        
+
                         <button type="submit" class="btn btn-primary w-100">
-                            Iniciar Sesión
+                            Ingresar
                         </button>
                     </form>
                 </div>
@@ -57,5 +79,4 @@
 
     <script src="{{ asset('bootstrap/js/bootstrap.js') }}"></script>
 </body>
-<x-footer></x-footer>
 </html>
