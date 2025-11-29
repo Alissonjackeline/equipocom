@@ -169,11 +169,10 @@
                             </div>
 
                             <div class="d-flex justify-content-end pt-4">
-                                <a href="{{ route('inventario.index') }}" class="btn btn-secondary">
-                                    <i class="fa-solid fa-times"></i>&nbsp;Cancelar
-                                </a>
+                                <button type="reset" class="btn btn-secondary">Cancelar
+                                </button>
                                 <button class="btn btn-primary mx-2" type="submit">
-                                    <i class="fa-solid fa-floppy-disk"></i> GUARDAR
+                                    <i class="fa-solid fa-floppy-disk"></i> Guardar
                                 </button>
                             </div>
                         </form>

@@ -2,8 +2,8 @@
 <div class="modal fade" id="{{ $id }}" tabindex="-1" aria-labelledby="{{ $id }}Label" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="{{ $id }}Label">Confirmar Eliminación</h5>
+            <div class="modal-header" id="encabezado">
+                <h5 class="modal-title" id="{{ $id }}Label" >Confirmar Eliminación</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -16,12 +16,6 @@
                     <li>Se eliminarán los registros de relación</li>
                 </ul>
                 
-                <div class="alert alert-warning">
-                    <small>
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                        <strong>Importante:</strong> Los equipos asignados cambiarán su estado de "En uso" a "Disponible"
-                    </small>
-                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>

@@ -8,61 +8,61 @@
     @include('layouts.partials.alert')
     <div class="container-fluid">
         <div class="col-12 pt-4">
-                <div class="card shadow-sm border-0">
-            <x-card-header title="LISTAR ASIGNACIONES" icon="fa-solid fa-file-circle-plus">
+            <div class="card shadow-sm border-0">
+                <x-card-header title="LISTAR ASIGNACIONES" icon="fa-solid fa-file-circle-plus">
 
-                <form action="{{ route('asignacion.index') }}" method="GET" class="row g-3">
-                    <div class="col-md-2">
-                        <label class="form-label fw-semibold" for="desde">
-                            Desde:
-                        </label>
-                        <input type="date" class="form-control" id="desde" name="desde"
-                            value="{{ request('desde') }}">
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label fw-semibold" for="hasta">
-                            Hasta:
-                        </label>
-                        <input type="date" class="form-control" id="hasta" name="hasta"
-                            value="{{ request('hasta') }}">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label fw-semibold" for="usuario_id">
-                            Usuario
-                        </label>
-                        <select class="form-control selectpicker" data-size="5" data-live-search="true" id="usuario_id"
-                            name="usuario_id">
-                            <option value="">Todos los usuarios</option>
-                            @foreach ($users ?? [] as $user)
-                                <option value="{{ $user->idUser }}"
-                                    {{ request('usuario_id') == $user->idUser ? 'selected' : '' }}>
-                                    {{ $user->Name }} - {{ $user->Document }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label fw-semibold" for="estado">
-                            Estado
-                        </label>
-                        <select class="form-control selectpicker" data-size="5" data-live-search="true" id="estado"
-                            name="estado">
-                            <option value="">Todos los estados</option>
-                            <option value="1" {{ request('estado') == '1' ? 'selected' : '' }}>Activo</option>
-                            <option value="0" {{ request('estado') == '0' ? 'selected' : '' }}>Inactivo</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2 d-flex align-items-end">
-                        <button class="btn btn-primary me-2">
-                            <i class="fa-solid fa-filter"></i> Filtrar
-                        </button>
-                        <a href="{{ route('asignacion.index') }}" class="btn btn-secondary">
-                            <i class="fa-solid fa-refresh"></i>
-                        </a>
-                    </div>
-                </form>
+                    <form action="{{ route('asignacion.index') }}" method="GET" class="row g-3">
+                        <div class="col-md-2">
+                            <label class="form-label fw-semibold" for="desde">
+                                Desde:
+                            </label>
+                            <input type="date" class="form-control" id="desde" name="desde"
+                                value="{{ request('desde') }}">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-semibold" for="hasta">
+                                Hasta:
+                            </label>
+                            <input type="date" class="form-control" id="hasta" name="hasta"
+                                value="{{ request('hasta') }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold" for="usuario_id">
+                                Usuario
+                            </label>
+                            <select class="form-control selectpicker" data-size="5" data-live-search="true" id="usuario_id"
+                                name="usuario_id">
+                                <option value="">Todos los usuarios</option>
+                                @foreach ($users ?? [] as $user)
+                                    <option value="{{ $user->idUser }}"
+                                        {{ request('usuario_id') == $user->idUser ? 'selected' : '' }}>
+                                        {{ $user->Name }} - {{ $user->Document }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold" for="estado">
+                                Estado
+                            </label>
+                            <select class="form-control selectpicker" data-size="5" data-live-search="true" id="estado"
+                                name="estado">
+                                <option value="">Todos los estados</option>
+                                <option value="1" {{ request('estado') == '1' ? 'selected' : '' }}>Activo</option>
+                                <option value="0" {{ request('estado') == '0' ? 'selected' : '' }}>Inactivo</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button class="btn btn-primary me-2">
+                                <i class="fa-solid fa-filter"></i> Filtrar
+                            </button>
+                            <a href="{{ route('asignacion.index') }}" class="btn btn-secondary">
+                                <i class="fa-solid fa-refresh"></i>
+                            </a>
+                        </div>
+                    </form>
 
-            </x-card-header>
+                </x-card-header>
             </div>
         </div>
 
@@ -119,13 +119,18 @@
                                     </div>
                                 @endforeach
                             </td>
-                            <td class="text-center">
+                            <td>
                                 <div class="mb-1">
-                                    <span class="info-asigtable">{{ $assignment->user->Name }}</span><br />
-                                    <span class="info-asigtable">DNI: {{ $assignment->user->Document }}</span><br />
-                                    <span class="info-asigtable text-muted small">
-                                        {{ $assignment->user->Email }}
-                                    </span>
+                                    <span class="info-label">Nombre:</span>
+                                    <span class="info-value">{{ $assignment->user->Name }}</span><br />
+                                </div>
+                                <div class="mb-1">
+                                    <span class="info-label">DNI:</span>
+                                    <span class="info-value">{{ $assignment->user->Document }}</span><br />
+                                </div>
+                                <div class="mb-1">
+                                    <span class="info-label">Email:</span>
+                                    <span class="info-value">{{ $assignment->user->Email }}</span><br />
                                 </div>
                             </td>
                             <td class="text-center">
@@ -165,16 +170,32 @@
                             </td>
                             <td class="text-center">
                                 <div class="btn-group">
-                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#modalEditar{{ $assignment->idAssignment }}" title="Editar">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </button>
-                                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#modalEliminar{{ $assignment->idAssignment }}" title="Eliminar">
-                                        <i class="fa-solid fa-trash-can"></i>
-                                    </button>
+
+                                    @php
+                                        $isActive = $assignment->assignedTeams->every(fn($t) => $t->Status == 1);
+                                    @endphp
+
+                                    @if ($isActive)
+                                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#modalEditar{{ $assignment->idAssignment }}" title="Editar">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+
+                                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#modalEliminar{{ $assignment->idAssignment }}"
+                                            title="Eliminar">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    @else
+                                        <button class="btn btn-secondary btn-sm" disabled title="No disponible">
+                                            <i class="fa-solid fa-ban"></i>
+                                        </button>
+                                    @endif
+
                                 </div>
                             </td>
+
+
                         </tr>
                     @endforeach
 

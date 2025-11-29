@@ -12,7 +12,6 @@
             <div class="card shadow-sm border-0">
                 <x-card-header title="AGREGAR DEVOLUCION" icon="fa-solid fa-repeat">
 
-                    <!-- Filtro por Jefe de Área -->
                     <form id="filterForm">
                         <div class="row g-3">
                             <div class="col-md-4">
@@ -38,7 +37,6 @@
                         </div>
                     </form>
 
-                    <!-- Datos del Asignado (se carga dinámicamente) -->
                     <div class="card mt-3 d-none" id="assignedCard">
                         <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2"
                             id="encabezado">
@@ -46,14 +44,10 @@
                         </div>
                         <div class="card-body fondocard">
                             <div class="row justify-content-center g-3" id="assignedData">
-                                <!-- Los datos se cargarán aquí dinámicamente -->
                             </div>
                         </div>
                     </div>
-
-                    <!-- Asignaciones del Jefe (se cargan dinámicamente) -->
                     <div id="assignmentsContainer" class="mt-3">
-                        <!-- Las asignaciones se cargarán aquí dinámicamente -->
                     </div>
 
                 </x-card-header>
@@ -62,8 +56,8 @@
             <div class="modal fade" id="devolverModal" tabindex="-1">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Registrar Devolución/Observación</h5>
+                        <div class="modal-header" id="encabezado">
+                            <h5 class="modal-title">Registrar Devolución</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <form action="{{ route('devolucion.store') }}" method="POST" enctype="multipart/form-data"
@@ -71,11 +65,15 @@
                             @csrf
                             <input type="hidden" name="Assignment_id" id="modalAssignmentId">
                             <input type="hidden" name="Equipment_id" id="modalEquipmentId">
-                            <input name="User_id" id="modalUserId">
+                            
+                            
+                            @if (auth()->check() && auth()->user())
+                                <input type="hidden" name="User_id" id="modalUserId" value="{{ auth()->user()->idUser }}">
+                            @endif
 
                             <div class="modal-body">
                                 <div class="row g-3">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <label class="form-label fw-semibold" for="modalDate">
                                             Fecha:
                                             <span class="text-danger">*</span>
@@ -83,12 +81,12 @@
                                         <input type="datetime-local" class="form-control" id="modalDate" name="Date"
                                             value="{{ now()->format('Y-m-d\TH:i:s') }}" step="1" required>
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <label class="form-label fw-semibold" for="estado">
                                             Estado del equipo:
                                             <span class="text-danger">*</span>
                                         </label>
-                                        <select class="form-select" id="estado" name="estado" required>
+                                        <select class="form-control selectpicker" data-size="5" data-live-search="true" name="estado" required>
                                             <option value="" selected disabled>Seleccionar estado</option>
                                             <option value="1">Disponible</option>
                                             <option value="2">Por preparar</option>
@@ -96,14 +94,14 @@
                                             <option value="5">R Pendiente</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <label class="form-label fw-semibold" for="comentario">
                                             Comentario:
                                         </label>
                                         <textarea class="form-control" id="comentario" name="comentario" rows="3"
                                             placeholder="Observaciones sobre la devolución"></textarea>
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <label class="form-label fw-semibold" for="imagen">
                                             Imagen:
                                         </label>
@@ -111,7 +109,7 @@
                                             accept="image/jpeg,image/png,image/jpg">
                                         <small class="text-muted">Formatos: JPG, PNG (Max: 2MB)</small>
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <label class="form-label fw-semibold" for="documento">
                                             Documento: <span class="text-danger">*</span>
                                         </label>
@@ -133,7 +131,6 @@
                 </div>
             </div>
 
-            <!-- Modales dinámicos para documentos, descripciones e imágenes -->
             <div id="dynamicModals"></div>
 
         </div>
@@ -145,7 +142,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             $('.selectpicker').selectpicker();
 
-            // Filtrar asignaciones por jefe
             document.getElementById('filterButton').addEventListener('click', function() {
                 const bossId = document.getElementById('jefe_id').value;
                 if (!bossId) {
@@ -155,7 +151,6 @@
                 loadBossAssignments(bossId);
             });
 
-            // Cargar asignaciones del jefe
             function loadBossAssignments(bossId) {
                 fetch(`/devolucion/boss-assignments/${bossId}`)
                     .then(response => {
@@ -179,7 +174,6 @@
                     });
             }
 
-            // Mostrar datos del asignado (jefe)
             function displayAssignedData(boss) {
                 if (!boss) {
                     console.log('No hay datos del jefe');
@@ -271,7 +265,6 @@
                 assignedCard.classList.remove('d-none');
             }
 
-            // Mostrar asignaciones
             function displayAssignments(assignments) {
                 const container = document.getElementById('assignmentsContainer');
                 const dynamicModals = document.getElementById('dynamicModals');
@@ -411,7 +404,7 @@
                                                     </div>
                                                     <div class="text-center mt-3">
                                                         <button class="btn btn-primary" 
-                                                                onclick="openReturnModal(${assignment.idAssignment}, ${equipment.idEquipment}, ${assignment.user?.idUser || 0})">
+                                                                onclick="openReturnModal(${assignment.idAssignment}, ${equipment.idEquipment})">
                                                             <i class="fa-solid fa-repeat"></i> Devolver / Observar
                                                         </button>
                                                     </div>
@@ -422,7 +415,6 @@
                                 </div>
                             `;
 
-                                // Crear modales para este equipo
                                 if (assignment.Document) {
                                     modalsHtml += `
                                     <div class="modal fade" id="docModal_${modalId}" tabindex="-1">
@@ -449,7 +441,7 @@
                                     <div class="modal fade" id="descModal_${modalId}" tabindex="-1">
                                         <div class="modal-dialog modal-md">
                                             <div class="modal-content">
-                                                <div class="modal-header">
+                                                <div class="modal-header" id="encabezado">
                                                     <h5 class="modal-title">Descripción - ${equipment.CodigoPatri || 'Equipo'}</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                 </div>
@@ -470,7 +462,7 @@
                                     <div class="modal fade" id="imgModal_${modalId}" tabindex="-1">
                                         <div class="modal-dialog modal-lg">
                                             <div class="modal-content">
-                                                <div class="modal-header">
+                                                <div class="modal-header" id="encabezado">
                                                     <h5 class="modal-title">Imagen - ${equipment.CodigoPatri || 'Equipo'}</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                 </div>
@@ -495,11 +487,9 @@
                 dynamicModals.innerHTML = modalsHtml;
             }
 
-            // Abrir modal de devolución
-            window.openReturnModal = function(assignmentId, equipmentId, userId) {
+            window.openReturnModal = function(assignmentId, equipmentId) {
                 document.getElementById('modalAssignmentId').value = assignmentId;
                 document.getElementById('modalEquipmentId').value = equipmentId;
-                document.getElementById('modalUserId').value = userId;
 
                 const modal = new bootstrap.Modal(document.getElementById('devolverModal'));
                 modal.show();

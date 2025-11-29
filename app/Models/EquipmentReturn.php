@@ -40,12 +40,8 @@ class EquipmentReturn extends Model
     }
 
     public function user()
-    {
-        return $this->belongsTo(User::class, 'User_id', 'idUser');
-    }
+{
+    return $this->belongsTo(User::class, 'User_id', 'idUser');
+}
 
-    public function boss()
-    {
-        return $this->belongsTo(Boss::class, 'User_id', 'idBoss');
-    }
 }

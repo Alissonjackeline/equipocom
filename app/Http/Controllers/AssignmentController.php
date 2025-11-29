@@ -17,7 +17,6 @@ class AssignmentController extends Controller
 {
     $query = Assignment::with(['user', 'boss', 'assignedTeams.equipment.equipmentType']);
 
-    // Filtros
     if ($request->filled('desde')) {
         $query->whereDate('Date', '>=', $request->desde);
     }
@@ -31,7 +30,6 @@ class AssignmentController extends Controller
     }
 
     if ($request->filled('estado')) {
-        // Filtrar por estado de assigned_team
         $query->whereHas('assignedTeams', function($q) use ($request) {
             $q->where('Status', $request->estado);
         });
@@ -39,7 +37,6 @@ class AssignmentController extends Controller
 
     $assignments = $query->orderBy('created_at', 'desc')->get();
     
-    // Obtener datos para los filtros y modales
     $users = User::where('Status', 1)->get();
     $bosses = Boss::where('Status', 1)->get();
 
@@ -73,22 +70,17 @@ class AssignmentController extends Controller
             $documentPath = null;
             $imagePath = null;
             $currentDate = now()->format('Ymd_His');
-
-            // Procesar documento
             if ($request->hasFile('Document')) {
                 $documentFile = $request->file('Document');
                 $documentName = 'documento_' . $currentDate . '_' . uniqid() . '.' . $documentFile->getClientOriginalExtension();
                 $documentPath = $documentFile->storeAs('documents/assignments', $documentName, 'public');
             }
-
-            // Procesar imagen
             if ($request->hasFile('Image')) {
                 $imageFile = $request->file('Image');
                 $imageName = 'imagen_' . $currentDate . '_' . uniqid() . '.' . $imageFile->getClientOriginalExtension();
                 $imagePath = $imageFile->storeAs('images/assignments', $imageName, 'public');
             }
 
-            // Crear la asignación
             $assignment = Assignment::create([
                 'User_id' => $request->User_id,
                 'Boss_id' => $request->Boss_id,
@@ -99,7 +91,6 @@ class AssignmentController extends Controller
                 'Status' => 1
             ]);
 
-            // Asignar equipos
             foreach ($request->equipments as $equipmentId) {
                 $equipment = Equipment::where('idEquipment', $equipmentId)
                     ->where('status', 1)
@@ -123,8 +114,6 @@ class AssignmentController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            
-            // Limpiar archivos en caso de error
             if ($documentPath && Storage::disk('public')->exists($documentPath)) {
                 Storage::disk('public')->delete($documentPath);
             }
@@ -172,10 +161,7 @@ class AssignmentController extends Controller
             ];
 
             $currentDate = now()->format('Ymd_His');
-
-            // Procesar nuevo documento
             if ($request->hasFile('Document')) {
-                // Eliminar documento anterior si existe
                 if ($assignment->Document) {
                     Storage::disk('public')->delete($assignment->Document);
                 }
@@ -185,10 +171,7 @@ class AssignmentController extends Controller
                 $documentPath = $documentFile->storeAs('documents/assignments', $documentName, 'public');
                 $updateData['Document'] = $documentPath;
             }
-
-            // Procesar nueva imagen
             if ($request->hasFile('Image')) {
-                // Eliminar imagen anterior si existe
                 if ($assignment->Image) {
                     Storage::disk('public')->delete($assignment->Image);
                 }
@@ -235,8 +218,6 @@ class AssignmentController extends Controller
             if ($assignment->Image) {
                 Storage::disk('public')->delete($assignment->Image);
             }
-            
-            // Eliminar asignación
             $assignment->delete();
 
             DB::commit();
