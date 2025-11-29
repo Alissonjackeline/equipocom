@@ -41,18 +41,11 @@
                             Usuario:
                             <span class="text-danger">*</span>
                         </label>
-                        <select class="form-control selectpicker" data-size="5" data-live-search="true" 
-                                id="User_id" name="User_id" required>
-                            <option value="" selected disabled>Seleccionar usuario</option>
-                            @foreach($users as $user)
-                                <option value="{{ $user->idUser }}" {{ old('User_id') == $user->idUser ? 'selected' : '' }}>
-                                    {{ $user->Document }} - {{ $user->Name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('User_id')
-                            <small class="text-danger">{{ '*' . $message }}</small>
-                        @enderror
+                       @if (auth()->check() && auth()->user())
+    <input type="number" name="User_id" id="User_id" class="form-control" readonly
+        value="{{ auth()->user()->idUser }}">
+@endif
+
                     </div>
 
                     <div class="col-md-3">

@@ -76,7 +76,7 @@
                             @csrf
                             <input type="hidden" name="Assignment_id" id="modalAssignmentId">
                             <input type="hidden" name="Equipment_id" id="modalEquipmentId">
-                            <input type="hidden" name="User_id" id="modalUserId">
+                            <input  name="User_id" id="modalUserId">
                             
                             <div class="modal-body">
                                 <div class="row g-3">

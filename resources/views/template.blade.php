@@ -14,80 +14,76 @@
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Datatables -->
-     <link href="{{ asset('Css/dataTables.bootstrap5.css') }}" rel="stylesheet" />
-     <link href="{{ asset('Css/buttons.bootstrap5.css') }}" rel="stylesheet" />
+    <link href="{{ asset('Css/dataTables.bootstrap5.css') }}" rel="stylesheet" />
+    <link href="{{ asset('Css/buttons.bootstrap5.css') }}" rel="stylesheet" />
 
     @stack('css')
 </head>
+@auth
 
-<body>
-    <x-navigation-header />
-    <div class="content-container">
-        @yield('content')
-    </div>
+    <body>
+        <x-navigation-header />
+        <div class="content-container">
+            @yield('content')
+        </div>
 
-    <x-navigation-menu />
+        <x-navigation-menu />
 
-    @php
-        $currentPageUrl = url()->current();
-    @endphp
-    <script>
-        const currentPageUrl = "{{ $currentPageUrl }}";
+        @php
+            $currentPageUrl = url()->current();
+        @endphp
+        <script>
+            const currentPageUrl = "{{ $currentPageUrl }}";
 
-        let activeLink = localStorage.getItem('activeLink') || null;
+            let activeLink = localStorage.getItem('activeLink') || null;
 
-        function activateLink(event, link) {
-            event.preventDefault();
+            function activateLink(event, link) {
+                event.preventDefault();
 
-            const links = document.querySelectorAll('.nav-link');
+                const links = document.querySelectorAll('.nav-link');
 
-            links.forEach(function(link) {
-                link.classList.remove('active');
-            });
+                links.forEach(function(link) {
+                    link.classList.remove('active');
+                });
 
-            link.classList.add('active');
+                link.classList.add('active');
 
-            activeLink = link;
+                activeLink = link;
 
-            localStorage.setItem('activeLink', activeLink.href);
+                localStorage.setItem('activeLink', activeLink.href);
 
-            window.location.href = link.href;
-        }
+                window.location.href = link.href;
+            }
 
-        // Establece el enlace activo inicialmente según la página actual
-        const defaultLink = document.querySelector(`.nav-link[href="${currentPageUrl}"]`);
-        if (defaultLink) {
-            defaultLink.classList.add('active');
-            activeLink = defaultLink;
-            localStorage.setItem('activeLink', activeLink.href);
-        }
-    </script>
+            const defaultLink = document.querySelector(`.nav-link[href="${currentPageUrl}"]`);
+            if (defaultLink) {
+                defaultLink.classList.add('active');
+                activeLink = defaultLink;
+                localStorage.setItem('activeLink', activeLink.href);
+            }
+        </script>
 
-    <script src="{{ asset('js/template.js') }}"></script>
-    <script src="{{ asset('bootstrap/js/bootstrap.bundle.js') }}"></script>
+        <script src="{{ asset('js/template.js') }}"></script>
+        <script src="{{ asset('bootstrap/js/bootstrap.bundle.js') }}"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
-    <!-- Datatables -->
-   
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
 
-     <!-- Datatables -->
-     <script src="{{ asset('js/jquery.dataTables.js') }}"></script>
-     <script src="{{ asset('js/dataTables.bootstrap5.js') }}"></script>
-     <script src="{{ asset('js/dataTables.buttons.js') }}"></script>
-     <script src="{{ asset('js/buttons.bootstrap5.js') }}"></script>
-     <script src="{{ asset('js/buttons.colVis.js') }}"></script>
-     <script src="{{ asset('js/buttons.html5.js') }}"></script>
-     <script src="{{ asset('js/buttons.print.js') }}"></script>
-     <script src="{{ asset('js/jszip.js') }}"></script>
-     <script src="{{ asset('js/pdfmake.js') }}"></script>
-     <script src="{{ asset('js/vfs_fonts.js') }}"></script>
-    <x-footer></x-footer>
-    @stack('js')
-</body>
-
-{{-- @guest
-   @include('errors.401') 
-@endguest --}}
+        <script src="{{ asset('js/jquery.dataTables.js') }}"></script>
+        <script src="{{ asset('js/dataTables.bootstrap5.js') }}"></script>
+        <script src="{{ asset('js/dataTables.buttons.js') }}"></script>
+        <script src="{{ asset('js/buttons.bootstrap5.js') }}"></script>
+        <script src="{{ asset('js/buttons.colVis.js') }}"></script>
+        <script src="{{ asset('js/buttons.html5.js') }}"></script>
+        <script src="{{ asset('js/buttons.print.js') }}"></script>
+        <script src="{{ asset('js/jszip.js') }}"></script>
+        <script src="{{ asset('js/pdfmake.js') }}"></script>
+        <script src="{{ asset('js/vfs_fonts.js') }}"></script>
+        <x-footer></x-footer>
+        @stack('js')
+    </body>
+@endauth
+@guest
+    @include('errors.401')
+@endguest
 
 </html>

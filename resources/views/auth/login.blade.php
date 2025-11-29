@@ -23,7 +23,6 @@
 
             <div class="col-12 col-md-4 d-flex justify-content-center align-items-center" style="background: #f8f9fa;">
                 <div style="max-width: 420px; width: 90%;">
-                    <!-- CAMBIO IMPORTANTE: action a /login (POST) -->
                     <form id="login-form" action="/login" method="post">
                         @csrf
                         <div class="logo-container text-center">

@@ -18,25 +18,31 @@ class LoginController extends Controller
 
     public function login(LoginRequest $request)
     {
-        // Validar credenciales (usa Auth::validate como en el ejemplo)
-        if (!Auth::validate($request->only('Email', 'Password'))) {
-            return redirect()->route('login')->withErrors('Credenciales incorrectas');
+        // Mapeo porque tu BD usa Email y Password
+        $credentials = [
+            'Email'    => $request->Email,
+            'password' => $request->Password // el provider usa password automáticamente
+        ];
+
+        // Validar credenciales
+        if (!Auth::validate($credentials)) {
+            return back()->withErrors('Credenciales incorrectas');
         }
 
-        // Obtener usuario por correo electrónico
-        $user = Auth::getProvider()->retrieveByCredentials($request->only('Email'));
+        // Obtener usuario real
+        $user = Auth::getProvider()->retrieveByCredentials($credentials);
 
-        // Verificar si el usuario está activo (Status 1)
-        if ($user && $user->Status != 1) {
-            return redirect()->route('login')->withErrors('Usuario no activo, contacta al administrador');
+        // Validar estado
+        if ($user->Status != 1) {
+            return back()->withErrors('Usuario no activo, contacta al administrador');
         }
 
         // Iniciar sesión
-        if (Auth::attempt($request->only('Email', 'Password'))) {
+        if (Auth::attempt($credentials)) {
             return redirect()->route('panel')->with('success', $user->Name);
         }
 
-        return redirect()->route('login')->withErrors('Credenciales incorrectas');
+        return back()->withErrors('Credenciales incorrectas');
     }
 
     public function logout(Request $request)
@@ -44,7 +50,6 @@ class LoginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        
         return redirect()->route('login');
     }
 }

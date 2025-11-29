@@ -21,12 +21,12 @@ Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
-// Redirigir raíz al login
+// Ruta publica
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// Rutas protegidas
+//Rutas privadas
 Route::middleware(['auth'])->group(function () {
     Route::get('/panel', [homeController::class, 'index'])->name('panel');
     
@@ -50,4 +50,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/asignacion/search/equipment', [AssignmentController::class, 'searchEquipment'])->name('asignacion.search-equipment');
     Route::get('/devolucion/boss-assignments/{bossId}', [DevolucionController::class, 'getBossAssignments'])->name('devolucion.boss-assignments');
     Route::post('/devolucion/store', [DevolucionController::class, 'store'])->name('devolucion.store');
+});
+
+Route::get('/401', function () {
+    return view('errors.401');
+});
+
+Route::get('/500', function () {
+    return view('errors.500');
+});
+
+Route::get('/404', function () {
+    return view('errors.404');
 });
