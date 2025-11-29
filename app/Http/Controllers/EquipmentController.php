@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Equipment;
 use App\Models\EquipmentType;
 use App\Models\Supplier;
+use App\Models\EquipmentReturn;
+use App\Models\Assignment;
+use App\Models\AssignedTeam;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 use Illuminate\Routing\Controller;
@@ -182,11 +185,86 @@ class EquipmentController extends Controller
         }
     }
 
-    /**
-     * Mostrar historial de inventario
-     */
-    public function historialinventario()
+    public function historialinventario(Request $request)
     {
-        return view('inventario.historial');
+        $equipment = null;
+        $historial = collect();
+
+        if ($request->has('codigo') || $request->has('serie')) {
+            $request->validate([
+                'codigo' => 'nullable|string|max:50',
+                'serie' => 'nullable|string|max:50'
+            ]);
+
+            $equipment = Equipment::with(['equipmentType', 'supplier'])
+                ->when($request->codigo, function($query) use ($request) {
+                    return $query->where('CodigoPatri', 'like', '%' . $request->codigo . '%');
+                })
+                ->when($request->serie, function($query) use ($request) {
+                    return $query->where('Series', 'like', '%' . $request->serie . '%');
+                })
+                ->first();
+
+            if ($equipment) {
+                $historial = $this->obtenerHistorialEquipo($equipment->idEquipment);
+            }
+        }
+
+        return view('inventario.historial', compact('equipment', 'historial'));
+    }
+
+    private function obtenerHistorialEquipo($equipmentId)
+    {
+        $historial = collect();
+
+        // Obtener todas las asignaciones del equipo (incluyendo las inactivas)
+        $asignaciones = AssignedTeam::with([
+            'assignment.user',
+            'assignment.boss.area',
+            'assignment.equipmentReturns' => function($query) use ($equipmentId) {
+                $query->where('Equipment_id', $equipmentId);
+            }
+        ])
+        ->where('Equipment_id', $equipmentId)
+        // Removemos el filtro de Status para obtener todo el historial
+        ->get();
+
+        foreach ($asignaciones as $asignacion) {
+            $assignment = $asignacion->assignment;
+            
+            if (!$assignment) {
+                continue;
+            }
+
+            // Buscar TODAS las devoluciones correspondientes a esta asignación y equipo
+            $devoluciones = $assignment->equipmentReturns
+                ->where('Equipment_id', $equipmentId);
+
+            // Si hay devoluciones, crear un registro por cada una
+            if ($devoluciones->count() > 0) {
+                foreach ($devoluciones as $devolucion) {
+                    $historial->push([
+                        'asignacion' => $assignment,
+                        'devolucion' => $devolucion,
+                        'fecha_asignacion' => $assignment->Date,
+                        'fecha_devolucion' => $devolucion->Date,
+                        'estado_asignacion' => $asignacion->Status,
+                        'estado_devolucion' => $devolucion->Status
+                    ]);
+                }
+            } else {
+                // Si no hay devoluciones, mostrar solo la asignación
+                $historial->push([
+                    'asignacion' => $assignment,
+                    'devolucion' => null,
+                    'fecha_asignacion' => $assignment->Date,
+                    'fecha_devolucion' => null,
+                    'estado_asignacion' => $asignacion->Status,
+                    'estado_devolucion' => null
+                ]);
+            }
+        }
+
+        return $historial->sortByDesc('fecha_asignacion')->values();
     }
 }

@@ -5,7 +5,7 @@
 <div class="modal fade" id="modalEliminar{{ $equipment->idEquipment }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header" id="encabezado">
                 <h5 class="modal-title">Confirmación</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>

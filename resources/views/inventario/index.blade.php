@@ -149,11 +149,9 @@
                                                 @endcan
                                             </td>
                                         </tr>
-                                        <!-- EDITAR -->
                                         <x-modal-editar-equipo id="modalEditar{{ $equipment->idEquipment }}" :equipment="$equipment"
                                             :equipmentTypes="$equipmentTypes" :suppliers="$suppliers" />
 
-                                        <!-- ELIMINAR -->
                                         <x-modal-eliminar-equipo id="modalEliminar{{ $equipment->idEquipment }}"
                                             :equipment="$equipment" />
                                     @endforeach

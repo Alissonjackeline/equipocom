@@ -15,7 +15,7 @@ class EquipmentSeeder extends Seeder
         DB::table('equipment')->insert([
 
             [
-                'EquipmentType_id' => 1, // PC Escritorio
+                'EquipmentType_id' => 1, 
                 'CodigoPatri'      => 'PC-001',
                 'Series'           => 'SR-12345',
                 'Model'            => 'Optiplex 7080',
