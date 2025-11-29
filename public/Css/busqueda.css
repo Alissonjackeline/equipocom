@@ -18,7 +18,7 @@ body {
 }
 
 #color2 {
-    color: #5197F7;
+    color: #005BBC;
 }
 
 #titulo {
@@ -107,17 +107,17 @@ input[type="text"] {
 }
 
 .custom-card:hover {
-    background-color: #5197F7;
+    background-color: #005BBC;
     color: #fff;
 }
 
 #encabezado {
-    background-color: #5197F7;
+    background-color: #005BBC;
     color: white;
 }
 
 #tarjeta {
-    background-color: #5197F7;
+    background-color: #005BBC;
 }
 
 #avatarDropdown {
@@ -135,7 +135,7 @@ input[type="text"] {
 }
 
 #color {
-    color: #5197F7;
+    color: #005BBC;
 }
 
 
@@ -145,7 +145,7 @@ input[type="text"] {
     position: fixed;
     top: 0;
     left: -100px;
-    background-color: #5197F7;
+    background-color: #005BBC;
     padding-top: 20px;
     transition: 0.3s;
 }

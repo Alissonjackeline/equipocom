@@ -11,6 +11,17 @@ use Illuminate\Validation\Rule;
 class BossController extends Controller
 {
     /**
+     * Constructor con middlewares de permisos
+     */
+    public function __construct()
+    {
+        $this->middleware('permission:Ver-Areas', ['only' => ['index']]);
+        $this->middleware('permission:Crear-Areas', ['only' => ['store']]);
+        $this->middleware('permission:Editar-Areas', ['only' => ['update']]);
+        $this->middleware('permission:Estado-Areas', ['only' => ['destroy']]);
+    }
+
+    /**
      * Mostrar listado de jefes
      */
     public function index()

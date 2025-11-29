@@ -4,6 +4,7 @@
 @section('content')
 @include('layouts.partials.alert')
 <div class="container-fluid">
+    @can('Editar-Empresa')
     <div class="row pt-3">
         <x-card-header title="DATOS EMPRESA" icon="fa-solid fa-pen-to-square">
 
@@ -76,5 +77,6 @@
 
         </x-card-header>
     </div>
+    @endcan
 </div>
 @endsection

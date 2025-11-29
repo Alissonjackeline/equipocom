@@ -3,22 +3,35 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Database\QueryException;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
+use Exception;
 
 class UserController extends Controller
 {
+    /**
+     * Constructor con middlewares de permisos
+     */
+    public function __construct()
+    {
+        $this->middleware('permission:Ver-Usuario', ['only' => ['index', 'show']]);
+        $this->middleware('permission:Crear-Usuario', ['only' => ['create', 'store']]);
+        $this->middleware('permission:Editar-Usuario', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:Estado-Usuario', ['only' => ['destroy']]);
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $users = User::latest()->get();
-        return view('user.index', compact('users'));
+        $users = User::with('roles')->latest()->get();
+        $roles = Role::all();
+        return view('user.index', compact('users', 'roles'));
     }
 
     /**
@@ -26,7 +39,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('user.create');
+        $roles = Role::all();
+        return view('user.create', compact('roles'));
     }
 
     /**
@@ -35,29 +49,26 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         try {
-            $user = User::create([
-                'Document' => $request->document,
-                'Name' => $request->name,
-                'Phone' => $request->phone,
-                'Email' => $request->email,
-                'Password' => Hash::make($request->password),
-                'Status' => 1, // Activo por defecto
-            ]);
+            DB::beginTransaction();
+            $fieldHash = Hash::make($request->Password);
+            $request->merge(['Password' => $fieldHash]);
 
-            return redirect()
-                ->route('user.create')
+            $user = User::create($request->all());
+            $user->assignRole($request->role);
+
+            DB::commit();
+
+            return redirect() 
+                ->route('user.index')
                 ->with('success', 'Usuario creado exitosamente.');
 
-        } catch (QueryException $e) {
-            return redirect()
-                ->route('user.create')
-                ->with('error', 'Error en base de datos al crear el usuario.')
-                ->withInput();
-        } catch (\Exception $e) {
-            return redirect()
-                ->route('user.create')
-                ->with('error', 'Error al crear el usuario: ' . $e->getMessage())
-                ->withInput();
+        } catch (Exception $e) {
+            DB::rollBack();
+            
+            return redirect() 
+                ->back()
+                ->withInput()
+                ->with('error', 'Error al crear el usuario: ' . $e->getMessage());
         }
     }
 
@@ -83,7 +94,8 @@ class UserController extends Controller
     {
         try {
             $user = User::findOrFail($id);
-            return view('user.edit', compact('user'));
+            $roles = Role::all(); // Agregar esto para pasar los roles a la vista
+            return view('user.edit', compact('user', 'roles'));
         } catch (\Exception $e) {
             return redirect()
                 ->route('user.index')
@@ -97,6 +109,8 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, string $id)
     {
         try {
+            DB::beginTransaction(); // Agregar transacción
+
             $user = User::findOrFail($id);
 
             $data = [
@@ -113,19 +127,29 @@ class UserController extends Controller
 
             $user->update($data);
 
+            // Actualizar el rol del usuario
+            if ($request->has('role')) {
+                $user->syncRoles([$request->role]);
+            }
+
+            DB::commit();
+
             return redirect()
                 ->route('user.index')
                 ->with('success', 'Usuario actualizado exitosamente.');
 
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            DB::rollBack();
             return redirect()
                 ->route('user.index')
                 ->with('error', 'El usuario no existe.');
         } catch (QueryException $e) {
+            DB::rollBack();
             return redirect()
                 ->route('user.index')
                 ->with('error', 'Error en base de datos al actualizar el usuario.');
         } catch (\Exception $e) {
+            DB::rollBack();
             return redirect()
                 ->route('user.index')
                 ->with('error', 'Error al actualizar el usuario: ' . $e->getMessage());

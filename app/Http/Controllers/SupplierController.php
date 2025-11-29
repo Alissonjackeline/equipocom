@@ -10,6 +10,17 @@ use Illuminate\Validation\Rule;
 class SupplierController extends Controller
 {
     /**
+     * Constructor con middlewares de permisos
+     */
+    public function __construct()
+    {
+        $this->middleware('permission:Ver-Proveedor', ['only' => ['index']]);
+        $this->middleware('permission:Crear-Proveedor', ['only' => ['store']]);
+        $this->middleware('permission:Editar-Proveedor', ['only' => ['update']]);
+        $this->middleware('permission:Estado-Proveedor', ['only' => ['destroy']]);
+    }
+
+    /**
      * Mostrar listado de proveedores
      */
     public function index()
@@ -98,27 +109,27 @@ class SupplierController extends Controller
         }
     }
 
-   public function destroy(string $id)
-{
-    try {
-        $supplier = Supplier::findOrFail($id);
+    public function destroy(string $id)
+    {
+        try {
+            $supplier = Supplier::findOrFail($id);
 
-        $newState = $supplier->Status == 1 ? 0 : 1;
+            $newState = $supplier->Status == 1 ? 0 : 1;
 
-        $supplier->update(['Status' => $newState]);
+            $supplier->update(['Status' => $newState]);
 
-        $message = $newState == 1
-            ? 'Proveedor activado correctamente.'
-            : 'Proveedor desactivado correctamente.';
+            $message = $newState == 1
+                ? 'Proveedor activado correctamente.'
+                : 'Proveedor desactivado correctamente.';
 
-        return redirect()->route('proveedor.index')->with('success', $message);
+            return redirect()->route('proveedor.index')->with('success', $message);
 
-    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-        return redirect()->route('proveedor.index')->with('error', 'El proveedor no existe.');
-    } catch (QueryException $e) {
-        return redirect()->route('proveedor.index')->with('error', 'Error en base de datos al cambiar el estado.');
-    } catch (\Exception $e) {
-        return redirect()->route('proveedor.index')->with('error', 'Ha ocurrido un error. Intenta nuevamente.');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return redirect()->route('proveedor.index')->with('error', 'El proveedor no existe.');
+        } catch (QueryException $e) {
+            return redirect()->route('proveedor.index')->with('error', 'Error en base de datos al cambiar el estado.');
+        } catch (\Exception $e) {
+            return redirect()->route('proveedor.index')->with('error', 'Ha ocurrido un error. Intenta nuevamente.');
+        }
     }
-}
 }

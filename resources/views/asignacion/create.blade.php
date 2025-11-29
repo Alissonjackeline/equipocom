@@ -11,15 +11,7 @@
     <div class="row pt-3">
         <x-card-header 
             title="CREAR ASIGNACION" 
-            icon="fa-solid fa-file-circle-plus"
-            :buttons="[
-                [
-                    'text' => 'Asignaciones',
-                    'icon' => 'fa-solid fa-file-circle-plus',
-                    'route' => route('asignacion.index'),
-                    'variant' => 'persona'
-                ]
-            ]">
+            icon="fa-solid fa-file-circle-plus">
 
             <form action="{{ route('asignacion.store') }}" method="POST" enctype="multipart/form-data" id="assignmentForm">
                 @csrf

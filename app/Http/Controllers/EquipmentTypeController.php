@@ -10,6 +10,17 @@ use Illuminate\Validation\Rule;
 class EquipmentTypeController extends Controller
 {
     /**
+     * Constructor con middlewares de permisos
+     */
+    public function __construct()
+    {
+        $this->middleware('permission:Ver-Tipo-Equipo', ['only' => ['index']]);
+        $this->middleware('permission:Crear-Tipo-Equipo', ['only' => ['store']]);
+        $this->middleware('permission:Editar-Tipo-Equipo', ['only' => ['update']]);
+        $this->middleware('permission:Estado-Tipo-Equipo', ['only' => ['destroy']]);
+    }
+
+    /**
      * Mostrar listado de tipos de equipo
      */
     public function index()

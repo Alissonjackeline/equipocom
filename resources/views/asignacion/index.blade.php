@@ -7,15 +7,9 @@
 @section('content')
     @include('layouts.partials.alert')
     <div class="container-fluid">
-        <div class="row pt-3">
-            <x-card-header title="LISTAR ASIGNACIONES" icon="fa-solid fa-file-circle-plus" :buttons="[
-                [
-                    'text' => 'Agregar',
-                    'icon' => 'fa-solid fa-circle-plus me-1',
-                    'route' => route('asignacion.create'),
-                    'variant' => 'persona',
-                ],
-            ]">
+        <div class="col-12 pt-4">
+                <div class="card shadow-sm border-0">
+            <x-card-header title="LISTAR ASIGNACIONES" icon="fa-solid fa-file-circle-plus">
 
                 <form action="{{ route('asignacion.index') }}" method="GET" class="row g-3">
                     <div class="col-md-2">
@@ -69,6 +63,7 @@
                 </form>
 
             </x-card-header>
+            </div>
         </div>
 
         <div class="row pt-3">

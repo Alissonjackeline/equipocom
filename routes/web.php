@@ -44,7 +44,7 @@ Route::middleware(['auth'])->group(function () {
         'tipoequipo' => EquipmentTypeController::class,
         'proveedor' => SupplierController::class,
         'entities' => EntitiesController::class,
-        'rol' => RoleController::class,
+        'roles' => RoleController::class,
     ]);
     
     Route::get('/asignacion/search/equipment', [AssignmentController::class, 'searchEquipment'])->name('asignacion.search-equipment');

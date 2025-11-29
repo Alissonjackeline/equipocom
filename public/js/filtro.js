@@ -15,7 +15,7 @@ $(document).ready(function() {
                     // Agregar un encabezado personalizado
                     doc['header'] = function() {
                         return {
-                            text: 'MUNICIPALIDAD DISTRITAL DE EL ALTO',
+                            text: 'MUNICIPALIDAD PROVINCIAL DE PIURA',
                             fontSize: 15,
                             alignment: 'center',
                             color: '#5197F7',

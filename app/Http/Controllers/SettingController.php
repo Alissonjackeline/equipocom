@@ -7,6 +7,14 @@ use Illuminate\Http\Request;
 class SettingController extends Controller
 {
     /**
+     * Constructor con middlewares de permisos
+     */
+    public function __construct()
+    {
+        $this->middleware('permission:Ver-Catalogo', ['only' => ['index']]);
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()

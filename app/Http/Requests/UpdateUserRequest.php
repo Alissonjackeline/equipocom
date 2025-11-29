@@ -21,28 +21,29 @@ class UpdateUserRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {
-        $userId = $this->route('user'); // Asumiendo que la ruta es user/{user}
+{
+    $userId = $this->route('user'); // Obtener el ID del usuario desde la ruta
 
-        return [
-            'document' => [
-                'required',
-                'string',
-                'size:8',
-                'regex:/^[0-9]+$/',
-                Rule::unique('users', 'Document')->ignore($userId, 'idUser')
-            ],
-            'name' => 'required|string|max:70',
-            'phone' => 'required|string|max:20',
-            'email' => [
-                'required',
-                'email',
-                'max:50',
-                Rule::unique('users', 'Email')->ignore($userId, 'idUser')
-            ],
-            'password' => 'nullable|string|min:8|confirmed',
-        ];
-    }
+    return [
+        'document' => [
+            'required',
+            'string',
+            'size:8',
+            'regex:/^[0-9]+$/',
+            Rule::unique('users', 'Document')->ignore($userId, 'idUser')
+        ],
+        'name' => 'required|string|max:70',
+        'phone' => 'required|string|max:20',
+        'email' => [
+            'required',
+            'email',
+            'max:50',
+            Rule::unique('users', 'Email')->ignore($userId, 'idUser')
+        ],
+        'password' => 'nullable|string|min:8|confirmed',
+        'role' => 'required|exists:roles,name'
+    ];
+}
 
     /**
      * Get custom messages for validator errors.

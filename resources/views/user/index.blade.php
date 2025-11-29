@@ -9,7 +9,6 @@
     @include('layouts.partials.alert')
 
     <div class="container-fluid">
-
         <div class="row pt-3">
             <div class="col-lg-12">
                 <x-card-header title="LISTA DE USUARIOS" icon="fa-solid fa-users" :buttons="[
@@ -18,6 +17,7 @@
                         'icon' => 'fa-solid fa-circle-plus me-1',
                         'route' => route('user.create'),
                         'variant' => 'persona',
+                        'permission' => 'Crear-Usuario', 
                     ],
                 ]">
 
@@ -39,9 +39,21 @@
                                     </div>
                                 </td>
                                 <td class="text-center">
-                                    <span class="badge bg-purple text-white">
-                                        <i class="fa-solid fa-user me-1"></i>Sin rol
-                                    </span>
+                                    @if ($user->getRoleNames()->count() > 0)
+                                        @if ($user->getRoleNames()->first() === 'administrador')
+                                            <span class="badge text-bg-warning">
+                                                <i class="fa-solid fa-crown me-1"></i>{{ $user->getRoleNames()->first() }}
+                                            </span>
+                                        @else
+                                            <span class="badge text-bg-info">
+                                                <i class="fa-solid fa-user me-1"></i>{{ $user->getRoleNames()->first() }}
+                                            </span>
+                                        @endif
+                                    @else
+                                        <span class="badge bg-purple text-white">
+                                            <i class="fa-solid fa-user me-1"></i>Sin rol
+                                        </span>
+                                    @endif
                                 </td>
 
                                 <td class="text-center">
@@ -59,16 +71,21 @@
                                 </td>
 
                                 <td class="text-center">
-                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#modalEditar{{ $user->idUser }}" title="Editar">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </button>
-                                    <button class="btn {{ $user->Status == 1 ? 'btn-danger' : 'btn-success' }} btn-sm"
-                                        data-bs-toggle="modal" data-bs-target="#modalEstado{{ $user->idUser }}"
-                                        title="{{ $user->Status == 1 ? 'Desactivar' : 'Activar' }}">
-                                        <i
-                                            class="fa-solid {{ $user->Status == 1 ? 'fa-circle-xmark' : 'fa-circle-check' }}"></i>
-                                    </button>
+                                    @can('Editar-Usuario')
+                                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#modalEditar{{ $user->idUser }}" title="Editar">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                    @endcan
+                                    
+                                    @can('Estado-Usuario')
+                                        <button class="btn {{ $user->Status == 1 ? 'btn-danger' : 'btn-success' }} btn-sm"
+                                            data-bs-toggle="modal" data-bs-target="#modalEstado{{ $user->idUser }}"
+                                            title="{{ $user->Status == 1 ? 'Desactivar' : 'Activar' }}">
+                                            <i class="fa-solid {{ $user->Status == 1 ? 'fa-circle-xmark' : 'fa-circle-check' }}"></i>
+                                        </button>
+                                    @endcan
+
                                 </td>
                             </tr>
                         @endforeach
@@ -79,85 +96,109 @@
         </div>
     </div>
 
-    <!-- MODALES PARA CADA USUARIO -->
+    {{-- Modales --}}
     @foreach ($users as $user)
-        <x-modal-status id="modalEstado{{ $user->idUser }}"
-            message="¿Seguro que deseas {{ $user->Status == 1 ? 'desactivar' : 'activar' }} al usuario '{{ $user->Name }}'?"
-            action="{{ route('user.destroy', $user->idUser) }}"
-            confirmText="{{ $user->Status == 1 ? 'Desactivar' : 'Activar' }}"
-            confirmClass="{{ $user->Status == 1 ? 'btn-danger' : 'btn-success' }}" method="DELETE" />
-        <!-- Modal para editar -->
-        <x-modal-base id="modalEditar{{ $user->idUser }}" title="Editar Usuario" size="modal-lg"
-            formId="formEditar{{ $user->idUser }}">
-            <form action="{{ route('user.update', $user->idUser) }}" method="POST" class="row"
-                id="formEditar{{ $user->idUser }}">
-                @csrf
-                @method('PUT')
+        {{-- Modal Estado --}}
+        @can('Estado-Usuario')
+            <x-modal-status id="modalEstado{{ $user->idUser }}"
+                message="¿Seguro que deseas {{ $user->Status == 1 ? 'desactivar' : 'activar' }} al usuario '{{ $user->Name }}'?"
+                action="{{ route('user.destroy', $user->idUser) }}"
+                confirmText="{{ $user->Status == 1 ? 'Desactivar' : 'Activar' }}"
+                confirmClass="{{ $user->Status == 1 ? 'btn-danger' : 'btn-success' }}" method="DELETE" />
+        @endcan
 
-                <div class="col-md-6 pt-2">
-                    <label class="form-label fw-semibold">
-                        DNI:<span class="text-danger">*</span>
-                    </label>
-                    <input type="text" name="document" class="form-control @error('document') is-invalid @enderror"
-                        value="{{ old('document', $user->Document) }}" required maxlength="8">
-                    @error('document')
-                        <small class="text-danger">{{ '*' . $message }}</small>
-                    @enderror
-                </div>
+        {{-- Modal Editar --}}
+        @can('Editar-Usuario')
+            <x-modal-base id="modalEditar{{ $user->idUser }}" title="Editar Usuario" size="modal-lg"
+                formId="formEditar{{ $user->idUser }}">
+                <form action="{{ route('user.update', $user->idUser) }}" method="POST" class="row"
+                    id="formEditar{{ $user->idUser }}">
+                    @csrf
+                    @method('PUT')
 
-                <div class="col-md-6 pt-2">
-                    <label class="form-label fw-semibold">
-                        Nombres completos:<span class="text-danger">*</span>
-                    </label>
-                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
-                        value="{{ old('name', $user->Name) }}" required maxlength="70">
-                    @error('name')
-                        <small class="text-danger">{{ '*' . $message }}</small>
-                    @enderror
-                </div>
+                    <div class="col-md-6 pt-2">
+                        <label class="form-label fw-semibold">
+                            DNI:<span class="text-danger">*</span>
+                        </label>
+                        <input type="text" name="document" class="form-control @error('document') is-invalid @enderror"
+                            value="{{ old('document', $user->Document) }}" required maxlength="8">
+                        @error('document')
+                            <small class="text-danger">{{ '*' . $message }}</small>
+                        @enderror
+                    </div>
 
-                <div class="col-md-6 pt-2">
-                    <label class="form-label fw-semibold">
-                        Teléfono:<span class="text-danger">*</span>
-                    </label>
-                    <input type="text" name="phone" class="form-control @error('phone') is-invalid @enderror"
-                        value="{{ old('phone', $user->Phone) }}" required maxlength="20">
-                    @error('phone')
-                        <small class="text-danger">{{ '*' . $message }}</small>
-                    @enderror
-                </div>
+                    <div class="col-md-6 pt-2">
+                        <label class="form-label fw-semibold">
+                            Nombres completos:<span class="text-danger">*</span>
+                        </label>
+                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
+                            value="{{ old('name', $user->Name) }}" required maxlength="70">
+                        @error('name')
+                            <small class="text-danger">{{ '*' . $message }}</small>
+                        @enderror
+                    </div>
 
-                <div class="col-md-6 pt-2">
-                    <label class="form-label fw-semibold">
-                        Correo:<span class="text-danger">*</span>
-                    </label>
-                    <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
-                        value="{{ old('email', $user->Email) }}" required maxlength="50">
-                    @error('email')
-                        <small class="text-danger">{{ '*' . $message }}</small>
-                    @enderror
-                </div>
+                    <div class="col-md-6 pt-2">
+                        <label class="form-label fw-semibold">
+                            Teléfono:<span class="text-danger">*</span>
+                        </label>
+                        <input type="text" name="phone" class="form-control @error('phone') is-invalid @enderror"
+                            value="{{ old('phone', $user->Phone) }}" required maxlength="20">
+                        @error('phone')
+                            <small class="text-danger">{{ '*' . $message }}</small>
+                        @enderror
+                    </div>
 
-                <div class="col-md-6 pt-2">
-                    <label class="form-label fw-semibold">
-                        Contraseña: <small class="text-muted">(Dejar vacío para no cambiar)</small>
-                    </label>
-                    <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
-                        placeholder="Nueva contraseña" minlength="8">
-                    @error('password')
-                        <small class="text-danger">{{ '*' . $message }}</small>
-                    @enderror
-                </div>
+                    <div class="col-md-6 pt-2">
+                        <label class="form-label fw-semibold">
+                            Correo:<span class="text-danger">*</span>
+                        </label>
+                        <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
+                            value="{{ old('email', $user->Email) }}" required maxlength="50">
+                        @error('email')
+                            <small class="text-danger">{{ '*' . $message }}</small>
+                        @enderror
+                    </div>
 
-                <div class="col-md-6 pt-2">
-                    <label class="form-label fw-semibold">
-                        Confirmar Contraseña:
-                    </label>
-                    <input type="password" name="password_confirmation" class="form-control"
-                        placeholder="Confirmar nueva contraseña" minlength="8">
-                </div>
-            </form>
-        </x-modal-base>
+                    <div class="col-md-6 pt-2">
+                        <label class="form-label fw-semibold">
+                            Rol:<span class="text-danger">*</span>
+                        </label>
+                        <select name="role" class="form-control selectpicker show-tick @error('role') is-invalid @enderror" required>
+                            <option value="" disabled>Seleccionar Rol</option>
+                            @foreach ($roles as $roleItem)
+                                <option value="{{ $roleItem->name }}"
+                                    {{ $user->getRoleNames()->first() == $roleItem->name ? 'selected' : '' }}>
+                                    {{ $roleItem->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('role')
+                            <small class="text-danger">{{ '*' . $message }}</small>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-6 pt-2">
+                        <label class="form-label fw-semibold">
+                            Contraseña: <small class="text-muted">(Dejar vacío para no cambiar)</small>
+                        </label>
+                        <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
+                            placeholder="Nueva contraseña" minlength="8">
+                        @error('password')
+                            <small class="text-danger">{{ '*' . $message }}</small>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-6 pt-2">
+                        <label class="form-label fw-semibold">
+                            Confirmar Contraseña:
+                        </label>
+                        <input type="password" name="password_confirmation" class="form-control"
+                            placeholder="Confirmar nueva contraseña" minlength="8">
+                    </div>
+                </form>
+            </x-modal-base>
+        @endcan
     @endforeach
 
 @endsection
@@ -165,7 +206,6 @@
 @push('js')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Validación de DNI (solo números)
             const dniInputs = document.querySelectorAll('input[name="document"]');
             dniInputs.forEach(input => {
                 input.addEventListener('input', function() {
@@ -173,7 +213,6 @@
                 });
             });
 
-            // Validación de teléfono
             const phoneInputs = document.querySelectorAll('input[name="phone"]');
             phoneInputs.forEach(input => {
                 input.addEventListener('input', function() {

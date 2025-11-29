@@ -8,63 +8,57 @@
 @section('content')
     @include('layouts.partials.alert')
     <div class="container-fluid">
-        <div class="row pt-3">
-            <x-card-header title="AGREGAR DEVOLUCION" icon="fa-solid fa-repeat" :buttons="[
-                [
-                    'text' => 'Devoluciones',
-                    'icon' => 'fa-solid fa-repeat',
-                    'route' => route('devolucion.index'),
-                    'variant' => 'persona',
-                ],
-            ]">
+        <div class="col-12 pt-4">
+            <div class="card shadow-sm border-0">
+                <x-card-header title="AGREGAR DEVOLUCION" icon="fa-solid fa-repeat">
 
-                <!-- Filtro por Jefe de Área -->
-                <form id="filterForm">
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <label class="form-label fw-semibold" for="jefe_id">
-                                Jefe de Area:
-                                <span class="text-danger">*</span>
-                            </label>
-                            <select class="form-control selectpicker" data-size="5" data-live-search="true" 
+                    <!-- Filtro por Jefe de Área -->
+                    <form id="filterForm">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold" for="jefe_id">
+                                    Jefe de Area:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-control selectpicker" data-size="5" data-live-search="true"
                                     id="jefe_id" name="jefe_id" required>
-                                <option value="" selected disabled>Seleccionar jefe de area</option>
-                                @foreach($bosses as $boss)
-                                    <option value="{{ $boss->idBoss }}">
-                                        {{ $boss->Document }} - {{ $boss->Name }} ({{ $boss->Cargo }})
-                                    </option>
-                                @endforeach
-                            </select>
+                                    <option value="" selected disabled>Seleccionar jefe de area</option>
+                                    @foreach ($bosses as $boss)
+                                        <option value="{{ $boss->idBoss }}">
+                                            {{ $boss->Document }} - {{ $boss->Name }} ({{ $boss->Cargo }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button type="button" class="btn btn-primary" id="filterButton">
+                                    <i class="fa-solid fa-filter"></i> Filtrar
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-md-2 d-flex align-items-end">
-                            <button type="button" class="btn btn-primary" id="filterButton">
-                                <i class="fa-solid fa-filter"></i> Filtrar
-                            </button>
+                    </form>
+
+                    <!-- Datos del Asignado (se carga dinámicamente) -->
+                    <div class="card mt-3 d-none" id="assignedCard">
+                        <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2"
+                            id="encabezado">
+                            <h6 class="mb-0 flex-md-grow-1 text-center">DATOS DEL ASIGNADO</h6>
+                        </div>
+                        <div class="card-body fondocard">
+                            <div class="row justify-content-center g-3" id="assignedData">
+                                <!-- Los datos se cargarán aquí dinámicamente -->
+                            </div>
                         </div>
                     </div>
-                </form>
 
-                <!-- Datos del Asignado (se carga dinámicamente) -->
-                <div class="card mt-3 d-none" id="assignedCard">
-                    <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2"
-                        id="encabezado">
-                        <h6 class="mb-0 flex-md-grow-1 text-center">DATOS DEL ASIGNADO</h6>
+                    <!-- Asignaciones del Jefe (se cargan dinámicamente) -->
+                    <div id="assignmentsContainer" class="mt-3">
+                        <!-- Las asignaciones se cargarán aquí dinámicamente -->
                     </div>
-                    <div class="card-body fondocard">
-                        <div class="row justify-content-center g-3" id="assignedData">
-                            <!-- Los datos se cargarán aquí dinámicamente -->
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Asignaciones del Jefe (se cargan dinámicamente) -->
-                <div id="assignmentsContainer" class="mt-3">
-                    <!-- Las asignaciones se cargarán aquí dinámicamente -->
-                </div>
+                </x-card-header>
+            </div>
 
-            </x-card-header>
-
-            <!-- Modal para Devolución -->
             <div class="modal fade" id="devolverModal" tabindex="-1">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
@@ -72,12 +66,13 @@
                             <h5 class="modal-title">Registrar Devolución/Observación</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
-                        <form action="{{ route('devolucion.store') }}" method="POST" enctype="multipart/form-data" id="returnForm">
+                        <form action="{{ route('devolucion.store') }}" method="POST" enctype="multipart/form-data"
+                            id="returnForm">
                             @csrf
                             <input type="hidden" name="Assignment_id" id="modalAssignmentId">
                             <input type="hidden" name="Equipment_id" id="modalEquipmentId">
-                            <input  name="User_id" id="modalUserId">
-                            
+                            <input name="User_id" id="modalUserId">
+
                             <div class="modal-body">
                                 <div class="row g-3">
                                     <div class="col-md-12">
@@ -85,8 +80,8 @@
                                             Fecha:
                                             <span class="text-danger">*</span>
                                         </label>
-                                        <input type="datetime-local" class="form-control" id="modalDate" name="Date" 
-                                               value="{{ now()->format('Y-m-d\TH:i:s') }}" step="1" required>
+                                        <input type="datetime-local" class="form-control" id="modalDate" name="Date"
+                                            value="{{ now()->format('Y-m-d\TH:i:s') }}" step="1" required>
                                     </div>
                                     <div class="col-md-12">
                                         <label class="form-label fw-semibold" for="estado">
@@ -105,29 +100,30 @@
                                         <label class="form-label fw-semibold" for="comentario">
                                             Comentario:
                                         </label>
-                                        <textarea class="form-control" id="comentario" name="comentario" rows="3" 
-                                                  placeholder="Observaciones sobre la devolución"></textarea>
+                                        <textarea class="form-control" id="comentario" name="comentario" rows="3"
+                                            placeholder="Observaciones sobre la devolución"></textarea>
                                     </div>
                                     <div class="col-md-12">
                                         <label class="form-label fw-semibold" for="imagen">
                                             Imagen:
                                         </label>
-                                        <input class="form-control" type="file" id="imagen" name="imagen" 
-                                               accept="image/jpeg,image/png,image/jpg">
+                                        <input class="form-control" type="file" id="imagen" name="imagen"
+                                            accept="image/jpeg,image/png,image/jpg">
                                         <small class="text-muted">Formatos: JPG, PNG (Max: 2MB)</small>
                                     </div>
                                     <div class="col-md-12">
                                         <label class="form-label fw-semibold" for="documento">
                                             Documento: <span class="text-danger">*</span>
                                         </label>
-                                        <input class="form-control" type="file" id="documento" name="documento" 
-                                               accept=".pdf">
+                                        <input class="form-control" type="file" id="documento" name="documento"
+                                            accept=".pdf">
                                         <small class="text-muted">Formatos: PDF (Max: 2MB)</small>
                                     </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">Cancelar</button>
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fa-solid fa-floppy-disk"></i> Guardar Devolución
                                 </button>
@@ -145,62 +141,62 @@
 @endsection
 
 @push('js')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        $('.selectpicker').selectpicker();
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            $('.selectpicker').selectpicker();
 
-        // Filtrar asignaciones por jefe
-        document.getElementById('filterButton').addEventListener('click', function() {
-            const bossId = document.getElementById('jefe_id').value;
-            if (!bossId) {
-                alert('Por favor seleccione un jefe de área');
-                return;
+            // Filtrar asignaciones por jefe
+            document.getElementById('filterButton').addEventListener('click', function() {
+                const bossId = document.getElementById('jefe_id').value;
+                if (!bossId) {
+                    alert('Por favor seleccione un jefe de área');
+                    return;
+                }
+                loadBossAssignments(bossId);
+            });
+
+            // Cargar asignaciones del jefe
+            function loadBossAssignments(bossId) {
+                fetch(`/devolucion/boss-assignments/${bossId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error en la respuesta del servidor');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Datos recibidos:', data);
+                        if (data.boss) {
+                            displayAssignedData(data.boss);
+                        }
+                        if (data.assignments) {
+                            displayAssignments(data.assignments);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error al cargar las asignaciones: ' + error.message);
+                    });
             }
-            loadBossAssignments(bossId);
-        });
 
-        // Cargar asignaciones del jefe
-        function loadBossAssignments(bossId) {
-            fetch(`/devolucion/boss-assignments/${bossId}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Error en la respuesta del servidor');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Datos recibidos:', data);
-                    if (data.boss) {
-                        displayAssignedData(data.boss);
-                    }
-                    if (data.assignments) {
-                        displayAssignments(data.assignments);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error al cargar las asignaciones: ' + error.message);
-                });
-        }
+            // Mostrar datos del asignado (jefe)
+            function displayAssignedData(boss) {
+                if (!boss) {
+                    console.log('No hay datos del jefe');
+                    return;
+                }
 
-        // Mostrar datos del asignado (jefe)
-        function displayAssignedData(boss) {
-            if (!boss) {
-                console.log('No hay datos del jefe');
-                return;
-            }
-            
-            const assignedCard = document.getElementById('assignedCard');
-            const assignedData = document.getElementById('assignedData');
-            
-            const documentNumber = boss.Document || 'N/A';
-            const name = boss.Name || 'N/A';
-            const cargo = boss.Cargo || 'N/A';
-            const phone = boss.Phone || 'N/A';
-            const areaName = boss.area?.Name || 'N/A';
-            const sedeName = boss.area?.headquarters?.Name || 'N/A';
-            
-            assignedData.innerHTML = `
+                const assignedCard = document.getElementById('assignedCard');
+                const assignedData = document.getElementById('assignedData');
+
+                const documentNumber = boss.Document || 'N/A';
+                const name = boss.Name || 'N/A';
+                const cargo = boss.Cargo || 'N/A';
+                const phone = boss.Phone || 'N/A';
+                const areaName = boss.area?.Name || 'N/A';
+                const sedeName = boss.area?.headquarters?.Name || 'N/A';
+
+                assignedData.innerHTML = `
                 <!-- DNI -->
                 <div class="col-6 col-sm-4 col-md-3 col-lg-2">
                     <div class="info-item text-center">
@@ -271,32 +267,33 @@
                     </div>
                 </div>
             `;
-            
-            assignedCard.classList.remove('d-none');
-        }
 
-        // Mostrar asignaciones
-        function displayAssignments(assignments) {
-            const container = document.getElementById('assignmentsContainer');
-            const dynamicModals = document.getElementById('dynamicModals');
-            
-            if (!assignments || assignments.length === 0) {
-                container.innerHTML = '<div class="alert alert-info">No hay asignaciones activas para este jefe.</div>';
-                return;
+                assignedCard.classList.remove('d-none');
             }
 
-            let html = '';
-            let modalsHtml = '';
-            let modalCounter = 0;
+            // Mostrar asignaciones
+            function displayAssignments(assignments) {
+                const container = document.getElementById('assignmentsContainer');
+                const dynamicModals = document.getElementById('dynamicModals');
 
-            assignments.forEach(assignment => {
-                if (assignment.assigned_teams && assignment.assigned_teams.length > 0) {
-                    assignment.assigned_teams.forEach(assignedTeam => {
-                        const equipment = assignedTeam.equipment;
-                        if (equipment) {
-                            const modalId = `modal_${modalCounter++}`;
-                            
-                            html += `
+                if (!assignments || assignments.length === 0) {
+                    container.innerHTML =
+                        '<div class="alert alert-info">No hay asignaciones activas para este jefe.</div>';
+                    return;
+                }
+
+                let html = '';
+                let modalsHtml = '';
+                let modalCounter = 0;
+
+                assignments.forEach(assignment => {
+                    if (assignment.assigned_teams && assignment.assigned_teams.length > 0) {
+                        assignment.assigned_teams.forEach(assignedTeam => {
+                            const equipment = assignedTeam.equipment;
+                            if (equipment) {
+                                const modalId = `modal_${modalCounter++}`;
+
+                                html += `
                                 <div class="col-12 col-md-6 col-lg-6 col-xl-4 mb-3">
                                     <div class="card h-100" id="card">
                                         <h6 class="card-header text-center" id="encabezado">
@@ -316,26 +313,26 @@
                                                 <div class="col-12 col-sm-6">
                                                     <div class="pt-2 d-flex gap-2 flex-wrap justify-content-center justify-content-sm-start">
                                                         ${assignment.Document ? `
-                                                            <button class="btn btn-primary btn-circle action-btn" 
-                                                                    data-bs-toggle="modal" data-bs-target="#docModal_${modalId}" 
-                                                                    title="Ver Documento">
-                                                                <i class="fa-solid fa-file-lines"></i>
-                                                            </button>
-                                                        ` : ''}
+                                                                <button class="btn btn-primary btn-circle action-btn" 
+                                                                        data-bs-toggle="modal" data-bs-target="#docModal_${modalId}" 
+                                                                        title="Ver Documento">
+                                                                    <i class="fa-solid fa-file-lines"></i>
+                                                                </button>
+                                                            ` : ''}
                                                         ${equipment.Description ? `
-                                                            <button class="btn btn-danger btn-circle action-btn" 
-                                                                    data-bs-toggle="modal" data-bs-target="#descModal_${modalId}" 
-                                                                    title="Ver descripción">
-                                                                <i class="fa-solid fa-message"></i>
-                                                            </button>
-                                                        ` : ''}
+                                                                <button class="btn btn-danger btn-circle action-btn" 
+                                                                        data-bs-toggle="modal" data-bs-target="#descModal_${modalId}" 
+                                                                        title="Ver descripción">
+                                                                    <i class="fa-solid fa-message"></i>
+                                                                </button>
+                                                            ` : ''}
                                                         ${equipment.Imagen ? `
-                                                            <button class="btn btn-dark btn-circle action-btn" 
-                                                                    data-bs-toggle="modal" data-bs-target="#imgModal_${modalId}" 
-                                                                    title="Ver imágenes">
-                                                                <i class="fa-solid fa-images"></i>
-                                                            </button>
-                                                        ` : ''}
+                                                                <button class="btn btn-dark btn-circle action-btn" 
+                                                                        data-bs-toggle="modal" data-bs-target="#imgModal_${modalId}" 
+                                                                        title="Ver imágenes">
+                                                                    <i class="fa-solid fa-images"></i>
+                                                                </button>
+                                                            ` : ''}
                                                     </div>
                                                 </div>
                                                 <div class="col-12 mt-3">
@@ -425,9 +422,9 @@
                                 </div>
                             `;
 
-                            // Crear modales para este equipo
-                            if (assignment.Document) {
-                                modalsHtml += `
+                                // Crear modales para este equipo
+                                if (assignment.Document) {
+                                    modalsHtml += `
                                     <div class="modal fade" id="docModal_${modalId}" tabindex="-1">
                                         <div class="modal-dialog modal-lg">
                                             <div class="modal-content">
@@ -445,10 +442,10 @@
                                         </div>
                                     </div>
                                 `;
-                            }
+                                }
 
-                            if (equipment.Description) {
-                                modalsHtml += `
+                                if (equipment.Description) {
+                                    modalsHtml += `
                                     <div class="modal fade" id="descModal_${modalId}" tabindex="-1">
                                         <div class="modal-dialog modal-md">
                                             <div class="modal-content">
@@ -466,10 +463,10 @@
                                         </div>
                                     </div>
                                 `;
-                            }
+                                }
 
-                            if (equipment.Imagen) {
-                                modalsHtml += `
+                                if (equipment.Imagen) {
+                                    modalsHtml += `
                                     <div class="modal fade" id="imgModal_${modalId}" tabindex="-1">
                                         <div class="modal-dialog modal-lg">
                                             <div class="modal-content">
@@ -487,25 +484,26 @@
                                         </div>
                                     </div>
                                 `;
+                                }
                             }
-                        }
-                    });
-                }
-            });
+                        });
+                    }
+                });
 
-            container.innerHTML = html ? `<div class="row">${html}</div>` : '<div class="alert alert-info">No hay equipos asignados activos.</div>';
-            dynamicModals.innerHTML = modalsHtml;
-        }
+                container.innerHTML = html ? `<div class="row">${html}</div>` :
+                    '<div class="alert alert-info">No hay equipos asignados activos.</div>';
+                dynamicModals.innerHTML = modalsHtml;
+            }
 
-        // Abrir modal de devolución
-        window.openReturnModal = function(assignmentId, equipmentId, userId) {
-            document.getElementById('modalAssignmentId').value = assignmentId;
-            document.getElementById('modalEquipmentId').value = equipmentId;
-            document.getElementById('modalUserId').value = userId;
-            
-            const modal = new bootstrap.Modal(document.getElementById('devolverModal'));
-            modal.show();
-        };
-    });
-</script>
+            // Abrir modal de devolución
+            window.openReturnModal = function(assignmentId, equipmentId, userId) {
+                document.getElementById('modalAssignmentId').value = assignmentId;
+                document.getElementById('modalEquipmentId').value = equipmentId;
+                document.getElementById('modalUserId').value = userId;
+
+                const modal = new bootstrap.Modal(document.getElementById('devolverModal'));
+                modal.show();
+            };
+        });
+    </script>
 @endpush

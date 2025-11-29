@@ -1,9 +1,8 @@
 body {
-    background-image: url("/img/fondosvg.svg");
+    background: linear-gradient(135deg, #deeeff 0%, #ffffff 100%);
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    /* Fija la imagen de fondo para que no se desplace con el contenido */
     padding-bottom: 60px;
 }
 
@@ -70,7 +69,7 @@ body {
     width: 26px;
     height: 26px;
     border-radius: 30%;
-    background: #5197F7;
+    background: #005BBC;
     text-align: center;
     transform: translateX(-50%);
     font-size: 1rem;
@@ -157,21 +156,18 @@ body {
     border: none;
 }
 
-/* Define el estilo para la tarjeta personalizada cuando se pasa el cursor sobre ella */
 .custom-card:hover {
-    background-color: #5197F7;
-    /* Cambia el color de fondo al pasar el cursor */
+    background-color: #005BBC;
     color: #fff;
-    /* Cambia el color del texto a blanco al pasar el cursor */
 }
 
 #encabezado {
-    background-color: #5197F7;
+    background-color: #005BBC;
     color: white;
 }
 
 #tarjeta {
-    background-color: #5197F7 !important;
+    background-color: #005BBC !important;
 }
 
 #avatarDropdown {
@@ -189,32 +185,100 @@ body {
 }
 
 #color {
-    color: #5197F7;
+    color: #005BBC;
 }
 
-/* Estilo para el sidebar */
 .sidebar {
     height: 100%;
     width: 80px;
     position: fixed;
     top: 0;
     left: -100px;
-    background-color: #5197F7;
+    background-color: #005BBC;
     padding-top: 20px;
     transition: 0.3s;
+}
+
+.sidebar .dropdown-toggle {
+    position: relative;
+}
+
+.sidebar .dropdown-toggle::after {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    font-size: 10px;
+}
+
+.sidebar .dropdown-menu {
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: none;
+    left: 100% !important;
+    top: 0 !important;
+    margin-left: 5px;
+    transform: none !important;
+}
+
+.sidebar .dropdown-menu-dark {
+    background-color: #005BBC;
+}
+
+.sidebar .dropdown-item {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    color: #fff;
+}
+
+.sidebar .dropdown-item:hover {
+    background-color: #5197F7;
+    padding-left: 1.5rem;
+}
+
+.sidebar .dropdown-item i {
+    width: 20px;
+    text-align: center;
+}
+
+/* Ajuste para que el botón del dropdown se vea consistente */
+.sidebar .dropdown .sidebar-link {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.sidebar .dropdown .sidebar-link i {
+    font-size: 30px !important;
+    margin-bottom: 4px;
+}
+
+.sidebar .dropdown .sidebar-link .sidebar-text {
+    font-size: 11px !important;
+    margin: 0;
+    line-height: 1.2;
+    font-weight: 600;
+}
+
+@media (max-width: 767px) {
+    .sidebar .dropdown-menu {
+        left: 80px !important;
+        margin-left: 0;
+    }
 }
 
 .p {
     font-size: 12px;
 }
 
-/* Estilo para el contenido principal cuando el sidebar está abierto */
 .content {
     margin-left: 0;
     transition: 0.3s;
 }
 
-/* Ajuste del margen izquierdo del contenido principal cuando el sidebar está cerrado */
 .sidebar-closed .content-container {
     margin-left: 100px;
 }
@@ -242,19 +306,16 @@ body {
     font-weight: 600;
 }
 
-/* Ajuste del margen izquierdo del contenido principal cuando el sidebar está abierto */
 .sidebar-open .content-container {
     margin-left: 0;
 }
 
-/* Estilo para los botones en el sidebar */
 .sidebar ul li {
     list-style: none;
     text-align: center;
     margin-bottom: 15px;
 }
 
-/* Estilo para el botón de alternar el sidebar */
 #sidebarCollapse {
     top: 10px;
     left: 10px;
@@ -266,7 +327,6 @@ body {
     font-size: 18px;
 }
 
-/* Estilo para el sidebar en dispositivos desktop */
 @media (min-width: 768px) {
     .sidebar {
         left: 0;
@@ -281,7 +341,6 @@ body {
     }
 }
 
-/* Estilo para el sidebar en dispositivos móviles */
 @media (max-width: 767px) {
     .sidebar {
         left: -80px;

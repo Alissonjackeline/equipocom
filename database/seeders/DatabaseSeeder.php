@@ -24,6 +24,8 @@ class DatabaseSeeder extends Seeder
            //EquipmentTypeSeeder::class,
            //SupplierSeeder::class,
            //EquipmentSeeder::class,
+        PermissionSeeder::class,
+        //UserSeeder::class,
         ]);
     }
 }

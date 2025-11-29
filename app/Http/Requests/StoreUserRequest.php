@@ -23,22 +23,23 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'document' => [
+            'Document' => [
                 'required',
                 'string',
                 'size:8',
                 'regex:/^[0-9]+$/',
                 Rule::unique('users', 'Document')
             ],
-            'name' => 'required|string|max:70',
-            'phone' => 'required|string|max:20',
-            'email' => [
+            'Name' => 'required|string|max:70',
+            'Phone' => 'required|string|max:20',
+            'Email' => [
                 'required',
                 'email',
                 'max:50',
                 Rule::unique('users', 'Email')
             ],
-            'password' => 'required|string|min:8|confirmed',
+            'Password' => 'required|string|min:8|confirmed',
+            'role' => 'required|exists:roles,name'
         ];
     }
 
@@ -50,19 +51,21 @@ class StoreUserRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'document.required' => 'El DNI es obligatorio.',
-            'document.size' => 'El DNI debe tener 8 dígitos.',
-            'document.regex' => 'El DNI solo debe contener números.',
-            'document.unique' => 'Este DNI ya está registrado.',
-            'name.required' => 'Los nombres completos son obligatorios.',
-            'name.max' => 'Los nombres no pueden exceder los 70 caracteres.',
-            'phone.required' => 'El teléfono es obligatorio.',
-            'email.required' => 'El correo electrónico es obligatorio.',
-            'email.email' => 'El formato del correo electrónico no es válido.',
-            'email.unique' => 'Este correo electrónico ya está registrado.',
-            'password.required' => 'La contraseña es obligatoria.',
-            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
-            'password.confirmed' => 'Las contraseñas no coinciden.',
+            'Document.required' => 'El DNI es obligatorio.',
+            'Document.size' => 'El DNI debe tener 8 dígitos.',
+            'Document.regex' => 'El DNI solo debe contener números.',
+            'Document.unique' => 'Este DNI ya está registrado.',
+            'Name.required' => 'Los nombres completos son obligatorios.',
+            'Name.max' => 'Los nombres no pueden exceder los 70 caracteres.',
+            'Phone.required' => 'El teléfono es obligatorio.',
+            'Email.required' => 'El correo electrónico es obligatorio.',
+            'Email.email' => 'El formato del correo electrónico no es válido.',
+            'Email.unique' => 'Este correo electrónico ya está registrado.',
+            'Password.required' => 'La contraseña es obligatoria.',
+            'Password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'Password.confirmed' => 'Las contraseñas no coinciden.',
+            'role.required' => 'El rol es obligatorio.',
+            'role.exists' => 'El rol seleccionado no es válido.',
         ];
     }
 
@@ -74,11 +77,12 @@ class StoreUserRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'document' => 'DNI',
-            'name' => 'nombres completos',
-            'phone' => 'teléfono',
-            'email' => 'correo electrónico',
-            'password' => 'contraseña',
+            'Document' => 'DNI',
+            'Name' => 'nombres completos',
+            'Phone' => 'teléfono',
+            'Email' => 'correo electrónico',
+            'Password' => 'contraseña',
+            'role' => 'rol',
         ];
     }
 }

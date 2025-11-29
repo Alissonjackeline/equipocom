@@ -34,13 +34,13 @@
 
 .btn-primary:focus,
 .btn-primary:active {
-    background-color: #5197F7 !important;
-    border-color: #5197F7 !important;
+    background-color: #005BBC !important;
+    border-color: #005BBC !important;
     color: #ffffff;
 }
 
 .drop-container:hover {
-    background: #5197F7;
+    background: #005BBC;
     border-color: rgba(17, 17, 17, 0.616);
 }
 
@@ -69,7 +69,7 @@
 #file-input::file-selector-button {
     margin-right: 20px;
     border: none;
-    background: #5197F7;
+    background: #005BBC;
     padding: 10px 20px;
     border-radius: 10px;
     color: #fff;
@@ -78,5 +78,5 @@
 }
 
 #file-input::file-selector-button:hover {
-    background: #5197F7;
+    background: #005BBC;
 }

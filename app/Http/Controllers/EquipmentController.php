@@ -7,38 +7,50 @@ use App\Models\EquipmentType;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Routing\Controller;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
 
 class EquipmentController extends Controller
 {
-public function index(Request $request)
-{
-    $equipmentTypes = EquipmentType::where('Status', 1)->get();
-    $suppliers = Supplier::where('Status', 1)->get();
-    $equipmentsAll = Equipment::with(['equipmentType', 'supplier'])->get();
-    $usuarioFiltro = $request->has('tipo_id') || $request->has('estado_id');
-
-    if (!$usuarioFiltro) {
-        return view('inventario.index', [
-            'equipments' => collect([]),  
-            'equipmentsAll' => $equipmentsAll, 
-            'equipmentTypes' => $equipmentTypes,
-            'suppliers' => $suppliers,
-        ]);
+    /**
+     * Constructor con middlewares de permisos
+     */
+    public function __construct()
+    {
+        $this->middleware('permission:Ver-Inventario', ['only' => ['index']]);
+        $this->middleware('permission:Crear-Inventario', ['only' => ['create', 'store']]);
+        $this->middleware('permission:Editar-Inventario', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:Eliminar-Inventario', ['only' => ['destroy']]);
     }
 
-    $equipments = Equipment::with(['equipmentType', 'supplier'])
-        ->when($request->tipo_id !== null && $request->tipo_id !== '', function ($q) use ($request) {
-            $q->where('equipmentType_id', $request->tipo_id);
-        })
-        ->when($request->estado_id !== null && $request->estado_id !== '', function ($q) use ($request) {
-            $q->where('Status', $request->estado_id);
-        })
-        ->get();
+    public function index(Request $request)
+    {
+        $equipmentTypes = EquipmentType::where('Status', 1)->get();
+        $suppliers = Supplier::where('Status', 1)->get();
+        $equipmentsAll = Equipment::with(['equipmentType', 'supplier'])->get();
+        $usuarioFiltro = $request->has('tipo_id') || $request->has('estado_id');
 
-    return view('inventario.index', compact('equipments', 'equipmentsAll', 'equipmentTypes', 'suppliers'));
-}
+        if (!$usuarioFiltro) {
+            return view('inventario.index', [
+                'equipments' => collect([]),  
+                'equipmentsAll' => $equipmentsAll, 
+                'equipmentTypes' => $equipmentTypes,
+                'suppliers' => $suppliers,
+            ]);
+        }
+
+        $equipments = Equipment::with(['equipmentType', 'supplier'])
+            ->when($request->tipo_id !== null && $request->tipo_id !== '', function ($q) use ($request) {
+                $q->where('equipmentType_id', $request->tipo_id);
+            })
+            ->when($request->estado_id !== null && $request->estado_id !== '', function ($q) use ($request) {
+                $q->where('Status', $request->estado_id);
+            })
+            ->get();
+
+        return view('inventario.index', compact('equipments', 'equipmentsAll', 'equipmentTypes', 'suppliers'));
+    }
 
     public function create()
     {
@@ -168,5 +180,13 @@ public function index(Request $request)
             return redirect()->route('inventario.index')
                 ->with('error', 'Error en base de datos al eliminar el equipo.');
         }
+    }
+
+    /**
+     * Mostrar historial de inventario
+     */
+    public function historialinventario()
+    {
+        return view('inventario.historial');
     }
 }
