@@ -12,6 +12,7 @@ use App\Http\Controllers\homeController;
 use App\Http\Controllers\EquipmentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\profileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
@@ -45,6 +46,7 @@ Route::middleware(['auth'])->group(function () {
         'proveedor' => SupplierController::class,
         'entities' => EntitiesController::class,
         'roles' => RoleController::class,
+        'profile' => profileController::class,
     ]);
     
     Route::get('/asignacion/search/equipment', [AssignmentController::class, 'searchEquipment'])->name('asignacion.search-equipment');

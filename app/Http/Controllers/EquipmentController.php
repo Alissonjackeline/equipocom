@@ -131,7 +131,7 @@ class EquipmentController extends Controller
             'Model' => 'required|string|max:50',
             'Brand' => 'required|string|max:50',
             'Description' => 'required|string|max:150',
-            'Price' => 'required|numeric|min:0|max:99999999.99',
+            'Price' => 'nullable|numeric|min:0|max:99999999.99',
             'Supplier_id' => 'required|integer|exists:suppliers,idSupplier',
             'status' => 'required|integer|between:1,8',
             'Imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
@@ -144,14 +144,12 @@ class EquipmentController extends Controller
                 if ($equipment->Imagen && Storage::disk('public')->exists($equipment->Imagen)) {
                     Storage::disk('public')->delete($equipment->Imagen);
                 }
-
                 $image = $request->file('Imagen');
                 $imageName = 'equipment_' . time() . '.' . $image->getClientOriginalExtension();
 
                 $path = $image->storeAs('equipments', $imageName, 'public');
                 $data['Imagen'] = $path;
             }
-
             $equipment->update($data);
 
             return redirect()->route('inventario.index')
@@ -164,26 +162,29 @@ class EquipmentController extends Controller
     }
 
     public function destroy($id)
-    {
-        try {
-            $equipment = Equipment::findOrFail($id);
-
-            if ($equipment->Imagen && Storage::disk('public')->exists($equipment->Imagen)) {
-                Storage::disk('public')->delete($equipment->Imagen);
-            }
-
-            $equipment->delete();
-
+{
+    try {
+        $equipment = Equipment::findOrFail($id);
+        if ($equipment->assignedTeams()->exists()) {
             return redirect()->route('inventario.index')
-                ->with('success', 'El equipo fue eliminado correctamente.');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return redirect()->route('inventario.index')
-                ->with('error', 'El equipo no existe.');
-        } catch (QueryException $e) {
-            return redirect()->route('inventario.index')
-                ->with('error', 'Error en base de datos al eliminar el equipo.');
+                ->with('error', 'No se puede eliminar este equipo porque tiene asignaciones registradas.');
         }
+        if ($equipment->Imagen && Storage::disk('public')->exists($equipment->Imagen)) {
+            Storage::disk('public')->delete($equipment->Imagen);
+        }
+        $equipment->delete();
+
+        return redirect()->route('inventario.index')
+            ->with('success', 'El equipo fue eliminado correctamente.');
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        return redirect()->route('inventario.index')
+            ->with('error', 'El equipo no existe.');
+    } catch (QueryException $e) {
+        return redirect()->route('inventario.index')
+            ->with('error', 'Error en base de datos al eliminar el equipo.');
     }
+}
+
 
     public function historialinventario(Request $request)
     {

@@ -234,7 +234,7 @@ class DevolucionController extends Controller
 
             if ($posteriorAssignments) {
                 return redirect()->route('devolucion.index')
-                    ->with('error', 'No se puede eliminar esta devolución porque el equipo ya fue asignado nuevamente después de esta devolución. Esta información es parte del historial del equipo.');
+                    ->with('error', 'No se puede eliminar esta devolución.');
             }
 
             $posteriorReturns = EquipmentReturn::where('Equipment_id', $equipmentId)
@@ -243,7 +243,7 @@ class DevolucionController extends Controller
 
             if ($posteriorReturns) {
                 return redirect()->route('devolucion.index')
-                    ->with('error', 'No se puede eliminar esta devolución porque existen devoluciones posteriores del mismo equipo. Esta información es parte del historial del equipo.');
+                    ->with('error', 'No se puede eliminar esta devolución porque existen devoluciones posteriores del mismo equipo.');
             }
 
             $equipment = Equipment::find($equipmentId);

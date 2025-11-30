@@ -27,8 +27,9 @@
                                 class="fa-solid fa-id-card-clip"></i>&nbsp;{{ auth()->user()->Email }}<br><i
                                 class="fa-solid fa-sitemap"></i>&nbsp;{{ auth()->user()->Name }}</a>
                     </li>
-                    <li><a class="dropdown-item" href="">Mi cuenta</a></li>
-                    <li>
+                    @can('Perfil')
+                        <li><a class="dropdown-item" href="{{ route('profile.index') }}">Mi cuenta</a></li>
+                    @endcan <li>
                         <hr class="dropdown-divider">
                     </li>
                     <li><a class="dropdown-item" href="{{ route('logout') }}" title="Cerrar sesion">Cerrar sesion</a>
